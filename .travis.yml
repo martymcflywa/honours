@@ -1,0 +1,10 @@
+language: java
+branches:
+  only:
+    - master
+notifications:
+  slack:
+    rooms:
+      bruhritto:pDmh2RiY4DC3iavgQ4WddgjZ
+    on_success: always
+    on_failure: always

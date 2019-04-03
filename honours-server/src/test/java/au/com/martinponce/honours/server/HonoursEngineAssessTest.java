@@ -3,6 +3,8 @@ package au.com.martinponce.honours.server;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.rmi.RemoteException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -12,6 +14,8 @@ import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("Honours engine assessment test")
 class HonoursEngineAssessTest {
+
+  private String id = "12345";
 
   @Test
   @DisplayName("Calculate mark average")
@@ -41,29 +45,29 @@ class HonoursEngineAssessTest {
 
   @Test
   @DisplayName("Assess denied")
-  void assessDenied() {
-    List<Integer> marks = IntStream.rangeClosed(1, HonoursEngine.MAX_FAILS + 1)
+  void assessDenied() throws Exception {
+    List<Integer> marks = IntStream.rangeClosed(1, HonoursEngine.MIN_MARKS)
         .boxed()
         .map(i -> HonoursEngine.PASS_MARK - 1)
         .collect(Collectors.toList());
     HonoursEngine sut = new HonoursEngine();
-    assertEquals(Result.DENIED, sut.assess(marks));
+    assertTrue(sut.assess(id, marks).contains(HonoursEngine.DENIED_MESSAGE));
   }
 
   @Test
   @DisplayName("Assess qualified")
-  void assessQualified() {
-    List<Integer> marks = IntStream.rangeClosed(1, 3)
+  void assessQualified() throws Exception {
+    List<Integer> marks = IntStream.rangeClosed(1, HonoursEngine.MIN_MARKS)
         .boxed()
         .map(i -> (int) HonoursEngine.AVG_FOR_QUALIFY)
         .collect(Collectors.toList());
     HonoursEngine sut = new HonoursEngine();
-    assertEquals(Result.QUALIFIED, sut.assess(marks));
+    assertTrue(sut.assess(id, marks).contains(HonoursEngine.QUALIFIED_MESSAGE));
   }
 
   @Test
   @DisplayName("Assess need assessment")
-  void assessNeedAssessment() {
+  void assessNeedAssessment() throws Exception {
     List<Integer> topMarks = IntStream.rangeClosed(1, 8)
         .boxed()
         .map(i -> (int) HonoursEngine.AVG_FOR_ASSESSMENT)
@@ -74,12 +78,13 @@ class HonoursEngineAssessTest {
         .collect(Collectors.toList());
     marks.addAll(topMarks);
     HonoursEngine sut = new HonoursEngine();
-    assertEquals(Result.NEED_ASSESSMENT, sut.assess(marks));
+    assertTrue(
+        sut.assess(id, marks).contains(HonoursEngine.NEED_ASSESSMENT_MESSAGE));
   }
 
   @Test
   @DisplayName("Assess need permission")
-  void assessNeedPermission() {
+  void assessNeedPermission() throws Exception {
     List<Integer> topMarks = IntStream.rangeClosed(1, 8)
         .boxed()
         .map(i -> (int) HonoursEngine.AVG_FOR_PERMISSION)
@@ -90,12 +95,13 @@ class HonoursEngineAssessTest {
         .collect(Collectors.toList());
     marks.addAll(topMarks);
     HonoursEngine sut = new HonoursEngine();
-    assertEquals(Result.NEED_PERMISSION, sut.assess(marks));
+    assertTrue(
+        sut.assess(id, marks).contains(HonoursEngine.NEED_PERMISSION_MESSAGE));
   }
 
   @Test
-  @DisplayName("Assess need permission")
-  void assessNotQualified() {
+  @DisplayName("Assess not qualified")
+  void assessNotQualified() throws Exception {
     List<Integer> topMarks = IntStream.rangeClosed(1, 8)
         .boxed()
         .map(i -> (int) HonoursEngine.AVG_FOR_PERMISSION - 1)
@@ -106,6 +112,42 @@ class HonoursEngineAssessTest {
         .collect(Collectors.toList());
     marks.addAll(topMarks);
     HonoursEngine sut = new HonoursEngine();
-    assertEquals(Result.NOT_QUALIFIED, sut.assess(marks));
+    assertTrue(
+        sut.assess(id, marks).contains(HonoursEngine.NOT_QUALIFIED_MESSAGE));
+  }
+
+  @Test
+  @DisplayName("Assess null id")
+  void assessNullId() {
+    List<Integer> marks = IntStream.rangeClosed(1, HonoursEngine.MIN_MARKS)
+        .boxed()
+        .collect(Collectors.toList());
+    HonoursEngine sut = new HonoursEngine();
+    assertThrows(RemoteException.class, () -> sut.assess(null, marks));
+  }
+
+  @Test
+  @DisplayName("Assess empty id")
+  void assessEmptyId() {
+    List<Integer> marks = IntStream.rangeClosed(1, HonoursEngine.MIN_MARKS)
+        .boxed()
+        .collect(Collectors.toList());
+    HonoursEngine sut = new HonoursEngine();
+    assertThrows(RemoteException.class, () -> sut.assess("", marks));
+  }
+
+  @Test
+  @DisplayName("Assess null marks")
+  void assessNullMarks() {
+    HonoursEngine sut = new HonoursEngine();
+    assertThrows(RemoteException.class, () -> sut.assess(id, null));
+  }
+
+  @Test
+  @DisplayName("Assess empty marks")
+  void assessEmptyMarsk() {
+    HonoursEngine sut = new HonoursEngine();
+    assertThrows(RemoteException.class, () -> sut.assess(id,
+        new ArrayList<>()));
   }
 }

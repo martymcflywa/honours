@@ -9,61 +9,57 @@ import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("Honours engine tests")
-class HonoursEngineTest {
+@DisplayName("Honours engine parameter validation test")
+class HonoursEngineParameterValidationTest {
 
   @Test
-  @DisplayName("Validate id test success")
+  @DisplayName("Validate legal id test")
   void validateIdSuccess() {
     HonoursEngine sut = new HonoursEngine();
-    try {
-      sut.validateId("12345");
-    } catch (Exception e) {
-      fail("Exception should not be thrown");
-    }
+    assertDoesNotThrow(() -> sut.validateId("12345"));
   }
 
   @Test
-  @DisplayName("Validate id test null")
+  @DisplayName("Validate null id test")
   void validateIdNull() {
     HonoursEngine sut = new HonoursEngine();
     assertThrows(NullPointerException.class, () -> sut.validateId(null));
   }
 
   @Test
-  @DisplayName("Validate id test empty")
+  @DisplayName("Validate empty id test")
   void validateIdEmpty() {
     HonoursEngine sut = new HonoursEngine();
     assertThrows(IllegalArgumentException.class, () -> sut.validateId(""));
   }
 
   @Test
-  @DisplayName("Validate marks test success")
+  @DisplayName("Validate legal marks test")
   void validateMarksSuccess() {
-    List<Integer> marks = IntStream.range(0, 29).boxed()
+    List<Integer> marks = IntStream.rangeClosed(1, HonoursEngine.MAX_MARKS)
+        .boxed()
         .collect(Collectors.toList());
     HonoursEngine sut = new HonoursEngine();
-    try {
-      sut.validateMarks(marks);
-    } catch (Exception e) {
-      fail("Exception should not be thrown");
-    }
+    assertDoesNotThrow(() -> sut.validateMarks(marks));
   }
 
   @Test
-  @DisplayName("Validate marks test less than min")
+  @DisplayName("Validate marks less than minimum test")
   void validateMarksLessThanMin() {
-    List<Integer> marks = IntStream.range(1, 2).boxed()
-        .collect(Collectors.toList());
+    List<Integer> marks =
+        IntStream.range(1, HonoursEngine.MIN_MARKS - 1)
+            .boxed()
+            .collect(Collectors.toList());
     HonoursEngine sut = new HonoursEngine();
     assertThrows(IllegalArgumentException.class,
         () -> sut.validateMarks(marks));
   }
 
   @Test
-  @DisplayName("Validate marks test greater than max")
+  @DisplayName("Validate marks greater than maximum test")
   void validateMarksGreaterThanMax() {
-    List<Integer> marks = IntStream.range(0, 30).boxed()
+    List<Integer> marks = IntStream.rangeClosed(1, HonoursEngine.MAX_MARKS + 1)
+        .boxed()
         .collect(Collectors.toList());
     HonoursEngine sut = new HonoursEngine();
     assertThrows(IllegalArgumentException.class,

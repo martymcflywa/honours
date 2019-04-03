@@ -36,7 +36,8 @@ class HonoursEngineParameterValidationTest {
   @Test
   @DisplayName("Validate legal marks test")
   void validateMarksSuccess() {
-    List<Integer> marks = IntStream.range(0, 29).boxed()
+    List<Integer> marks = IntStream.rangeClosed(1, HonoursEngine.MAX_MARKS)
+        .boxed()
         .collect(Collectors.toList());
     HonoursEngine sut = new HonoursEngine();
     assertDoesNotThrow(() -> sut.validateMarks(marks));
@@ -45,8 +46,10 @@ class HonoursEngineParameterValidationTest {
   @Test
   @DisplayName("Validate marks less than minimum test")
   void validateMarksLessThanMin() {
-    List<Integer> marks = IntStream.range(1, 2).boxed()
-        .collect(Collectors.toList());
+    List<Integer> marks =
+        IntStream.range(1, HonoursEngine.MIN_MARKS - 1)
+            .boxed()
+            .collect(Collectors.toList());
     HonoursEngine sut = new HonoursEngine();
     assertThrows(IllegalArgumentException.class,
         () -> sut.validateMarks(marks));
@@ -55,7 +58,8 @@ class HonoursEngineParameterValidationTest {
   @Test
   @DisplayName("Validate marks greater than maximum test")
   void validateMarksGreaterThanMax() {
-    List<Integer> marks = IntStream.range(0, 30).boxed()
+    List<Integer> marks = IntStream.rangeClosed(1, HonoursEngine.MAX_MARKS + 1)
+        .boxed()
         .collect(Collectors.toList());
     HonoursEngine sut = new HonoursEngine();
     assertThrows(IllegalArgumentException.class,

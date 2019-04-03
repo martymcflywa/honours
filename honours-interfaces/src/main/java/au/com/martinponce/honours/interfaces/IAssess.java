@@ -2,7 +2,7 @@ package au.com.martinponce.honours.interfaces;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.List;
+import java.util.Collection;
 
 public interface IAssess extends Remote {
 
@@ -13,5 +13,5 @@ public interface IAssess extends Remote {
    * @return Message indicating honours eligibility.
    * @throws RemoteException
    */
-  String assess(String id, List<Integer> marks) throws RemoteException;
+  String assess(String id, Collection<Integer> marks) throws RemoteException;
 }

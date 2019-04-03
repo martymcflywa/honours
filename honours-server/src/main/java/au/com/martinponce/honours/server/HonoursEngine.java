@@ -7,6 +7,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.rmi.RemoteException;
 import java.util.Collection;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
 public class HonoursEngine implements IAssess {
 
@@ -75,5 +77,17 @@ public class HonoursEngine implements IAssess {
     return new BigDecimal(average)
         .setScale(2, RoundingMode.HALF_UP)
         .doubleValue();
+  }
+
+  /**
+   * Get top scoring number of marks.
+   * @param marks The course unit marks.
+   * @param n The number of marks to return.
+   * @return The top scoring number of marks.
+   */
+  Stream<Integer> top(Collection<Integer> marks, int n) {
+    return marks.stream()
+        .sorted(Comparator.reverseOrder())
+        .limit(n);
   }
 }

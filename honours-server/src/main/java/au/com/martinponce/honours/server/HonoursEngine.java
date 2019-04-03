@@ -22,7 +22,7 @@ public class HonoursEngine implements IAssess {
     int min = 12;
     int max = 30;
     Validate.notEmpty(marks);
-    Validate.isTrue(marks.size() >= min, "Min %d marks", min);
-    Validate.isTrue(marks.size() < max, "Max %d marks", max);
+    Validate.isTrue(marks.size() >= min, "Minimum %d marks", min);
+    Validate.isTrue(marks.size() < max, "Maximum %d marks", max);
   }
 }

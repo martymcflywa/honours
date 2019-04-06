@@ -1,7 +1,8 @@
 package au.com.martinponce.honours.server;
 
 import au.com.martinponce.honours.interfaces.IAssess;
-import org.apache.commons.lang3.Validate;
+import au.com.martinponce.honours.interfaces.IRequest;
+import au.com.martinponce.honours.interfaces.Rules;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -13,9 +14,6 @@ import java.util.stream.Stream;
 
 public class HonoursEngine extends UnicastRemoteObject implements IAssess {
 
-  static final int MIN_MARKS = 12;
-  static final int MAX_MARKS = 30;
-  static final int PASS_MARK = 50;
   static final double AVG_FOR_QUALIFY = 70d;
   static final double AVG_FOR_ASSESSMENT = 80d;
   static final double AVG_FOR_PERMISSION = 70d;
@@ -39,17 +37,15 @@ public class HonoursEngine extends UnicastRemoteObject implements IAssess {
   }
 
   /**
-   * @param id The student's id.
-   * @param marks The course unit marks.
+   * @param request The request object containing student id and marks.
    * @return The assessment result.
    * @throws RemoteException When errors occur.
    */
   @Override
-  public String assess(String id, Collection<Integer> marks) throws RemoteException {
+  public String assess(IRequest request) throws RemoteException {
     try {
-      validateId(id);
-      validateMarks(marks);
-      String response = response(id, marks, assess(marks));
+      String response = response(request.id(), request.marks(),
+          assess(request.marks()));
       LOG.info(response);
       return response;
     } catch (Exception e) {
@@ -111,7 +107,7 @@ public class HonoursEngine extends UnicastRemoteObject implements IAssess {
    */
   private boolean isDenied(Collection<Integer> marks) {
     return marks.stream()
-        .filter(i -> i < PASS_MARK)
+        .filter(i -> i < Rules.PASS_MARK)
         .count() > MAX_FAILS;
   }
 
@@ -169,27 +165,5 @@ public class HonoursEngine extends UnicastRemoteObject implements IAssess {
     return marks.stream()
         .sorted(Comparator.reverseOrder())
         .limit(n);
-  }
-
-  /**
-   * Validate student id.
-   * Must not be null or empty string.
-   * @param id The student's id.
-   */
-  void validateId(String id) {
-    Validate.notEmpty(id);
-  }
-
-  /**
-   * Validate marks.
-   * Must not be empty.
-   * Must have at least MIN_MARKS elements.
-   * Must not have elements greater than MAX_MARKS.
-   * @param marks The course unit marks.
-   */
-  void validateMarks(Collection<Integer> marks) {
-    Validate.notEmpty(marks);
-    Validate.isTrue(marks.size() >= MIN_MARKS, "Minimum %d marks", MIN_MARKS);
-    Validate.isTrue(marks.size() <= MAX_MARKS, "Maximum %d marks", MAX_MARKS);
   }
 }

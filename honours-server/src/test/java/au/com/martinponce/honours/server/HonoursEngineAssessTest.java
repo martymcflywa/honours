@@ -1,12 +1,11 @@
 package au.com.martinponce.honours.server;
 
-import au.com.martinponce.honours.interfaces.Request;
-import au.com.martinponce.honours.interfaces.Rules;
+import au.com.martinponce.honours.core.Request;
+import au.com.martinponce.honours.core.Rules;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -17,32 +16,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class HonoursEngineAssessTest {
 
   private String id = "12345";
-
-  @Test
-  @DisplayName("Calculate mark average")
-  void calculateMarkAverage() throws Exception {
-    List<Integer> marks = IntStream.rangeClosed(1, 5)
-        .boxed()
-        .collect(Collectors.toList());
-    HonoursEngine sut = new HonoursEngine();
-    double expected = 3;
-    assertEquals(expected, sut.average(marks));
-  }
-
-  @Test
-  @DisplayName("Top five marks")
-  void topFiveMarks() throws Exception {
-    int limit = 5;
-    List<Integer> marks = IntStream.rangeClosed(1, 10)
-        .boxed()
-        .collect(Collectors.toList());
-    HonoursEngine sut = new HonoursEngine();
-    List<Integer> expected = IntStream.rangeClosed(6, 10)
-        .boxed()
-        .sorted(Comparator.reverseOrder())
-        .collect(Collectors.toList());
-    assertEquals(expected, sut.top(marks, limit).collect(Collectors.toList()));
-  }
 
   @Test
   @DisplayName("Assess denied")
@@ -61,7 +34,7 @@ class HonoursEngineAssessTest {
   void assessQualified() throws Exception {
     List<Integer> marks = IntStream.rangeClosed(1, Rules.MIN_MARKS)
         .boxed()
-        .map(i -> (int) HonoursEngine.AVG_FOR_QUALIFY)
+        .map(i -> (int) Rules.AVG_FOR_QUALIFY)
         .collect(Collectors.toList());
     HonoursEngine sut = new HonoursEngine();
     assertTrue(sut.assess(new Request(id, marks))
@@ -73,7 +46,7 @@ class HonoursEngineAssessTest {
   void assessNeedAssessment() throws Exception {
     List<Integer> topMarks = IntStream.rangeClosed(1, 8)
         .boxed()
-        .map(i -> (int) HonoursEngine.AVG_FOR_ASSESSMENT)
+        .map(i -> (int) Rules.AVG_FOR_ASSESSMENT)
         .collect(Collectors.toList());
     List<Integer> marks = IntStream.rangeClosed(1, 22)
         .boxed()
@@ -90,7 +63,7 @@ class HonoursEngineAssessTest {
   void assessNeedPermission() throws Exception {
     List<Integer> topMarks = IntStream.rangeClosed(1, 8)
         .boxed()
-        .map(i -> (int) HonoursEngine.AVG_FOR_PERMISSION)
+        .map(i -> (int) Rules.AVG_FOR_PERMISSION)
         .collect(Collectors.toList());
     List<Integer> marks = IntStream.rangeClosed(1, 22)
         .boxed()
@@ -107,7 +80,7 @@ class HonoursEngineAssessTest {
   void assessNotQualified() throws Exception {
     List<Integer> topMarks = IntStream.rangeClosed(1, 8)
         .boxed()
-        .map(i -> (int) HonoursEngine.AVG_FOR_PERMISSION - 1)
+        .map(i -> (int) Rules.AVG_FOR_PERMISSION - 1)
         .collect(Collectors.toList());
     List<Integer> marks = IntStream.rangeClosed(1, 22)
         .boxed()

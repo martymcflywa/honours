@@ -1,7 +1,7 @@
-package au.com.martinponce.honours.server;
+package au.com.martinponce.honours.core;
 
-import au.com.martinponce.honours.interfaces.Request;
-import au.com.martinponce.honours.interfaces.Rules;
+import au.com.martinponce.honours.core.Request;
+import au.com.martinponce.honours.core.Rules;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

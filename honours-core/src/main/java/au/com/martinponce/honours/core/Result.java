@@ -1,4 +1,4 @@
-package au.com.martinponce.honours.server;
+package au.com.martinponce.honours.core;
 
 public enum Result {
   QUALIFIED,

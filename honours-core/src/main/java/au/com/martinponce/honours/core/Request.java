@@ -1,5 +1,6 @@
-package au.com.martinponce.honours.interfaces;
+package au.com.martinponce.honours.core;
 
+import au.com.martinponce.honours.interfaces.IRequest;
 import org.apache.commons.lang3.Validate;
 
 import java.util.Collection;

@@ -33,6 +33,7 @@
 
   <modules>
     <module>honours-interfaces</module>
+    <module>honours-core</module>
     <module>honours-server</module>
     <module>honours-client</module>
   </modules>

@@ -45,11 +45,11 @@ echo "Wait $wait seconds, ensure rmiregistry has started";
 sleep $wait
 
 echo "Start honours server as background process";
-java -jar -Djava.security.policy=security.policy $serverAssembly &
+java -jar -Djava.security.policy=security.policy -Djava.rmi.server.hostname=localhost $serverAssembly &
 sleep 1
 
 echo "Start honours client in foreground";
-java -jar -Djava.security.policy=security.policy $clientAssembly &
+java -jar -Djava.security.policy=security.policy -Djava.rmi.server.hostname=localhost $clientAssembly
 
 echo "Press enter to exit";
 read junk

@@ -19,7 +19,7 @@ class HonoursEngineAssessTest {
 
   @Test
   @DisplayName("Calculate mark average")
-  void calculateMarkAverage() {
+  void calculateMarkAverage() throws Exception {
     List<Integer> marks = IntStream.rangeClosed(1, 5)
         .boxed()
         .collect(Collectors.toList());
@@ -30,7 +30,7 @@ class HonoursEngineAssessTest {
 
   @Test
   @DisplayName("Top five marks")
-  void topFiveMarks() {
+  void topFiveMarks() throws Exception {
     int limit = 5;
     List<Integer> marks = IntStream.rangeClosed(1, 10)
         .boxed()
@@ -118,7 +118,7 @@ class HonoursEngineAssessTest {
 
   @Test
   @DisplayName("Assess null id")
-  void assessNullId() {
+  void assessNullId() throws Exception {
     List<Integer> marks = IntStream.rangeClosed(1, HonoursEngine.MIN_MARKS)
         .boxed()
         .collect(Collectors.toList());
@@ -128,7 +128,7 @@ class HonoursEngineAssessTest {
 
   @Test
   @DisplayName("Assess empty id")
-  void assessEmptyId() {
+  void assessEmptyId() throws Exception {
     List<Integer> marks = IntStream.rangeClosed(1, HonoursEngine.MIN_MARKS)
         .boxed()
         .collect(Collectors.toList());
@@ -138,14 +138,14 @@ class HonoursEngineAssessTest {
 
   @Test
   @DisplayName("Assess null marks")
-  void assessNullMarks() {
+  void assessNullMarks() throws Exception {
     HonoursEngine sut = new HonoursEngine();
     assertThrows(RemoteException.class, () -> sut.assess(id, null));
   }
 
   @Test
   @DisplayName("Assess empty marks")
-  void assessEmptyMarsk() {
+  void assessEmptyMarks() throws Exception {
     HonoursEngine sut = new HonoursEngine();
     assertThrows(RemoteException.class, () -> sut.assess(id,
         new ArrayList<>()));

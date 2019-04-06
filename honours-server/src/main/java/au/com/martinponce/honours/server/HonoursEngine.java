@@ -6,11 +6,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
+import java.rmi.server.UnicastRemoteObject;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.stream.Stream;
 
-public class HonoursEngine implements IAssess {
+public class HonoursEngine extends UnicastRemoteObject implements IAssess {
 
   static final int MIN_MARKS = 12;
   static final int MAX_MARKS = 30;
@@ -25,12 +26,17 @@ public class HonoursEngine implements IAssess {
   static final String NEED_ASSESSMENT_MESSAGE = "MAY HAVE A GOOD CHANCE! Need" +
       " further assessment!";
   static final String NEED_PERMISSION_MESSAGE = "MAY HAVE A CHANCE! Must be " +
-      "carefully reassessed and get the coordinator's special permission";
+      "carefully reassessed and get the coordinator's special permission!";
   static final String NOT_QUALIFIED_MESSAGE = "DOES NOT QUALIFY FOR HONOURS " +
       "STUDY! Try Masters By Coursework.";
   static final String DENIED_MESSAGE = "TOO MANY FAILURES!";
 
-  private Logger logger = LoggerFactory.getLogger(this.getClass());
+  private static final Logger LOG =
+      LoggerFactory.getLogger(HonoursEngine.class);
+
+  HonoursEngine() throws RemoteException {
+    super();
+  }
 
   /**
    * @param id The student's id.
@@ -43,9 +49,11 @@ public class HonoursEngine implements IAssess {
     try {
       validateId(id);
       validateMarks(marks);
-      return response(id, marks, assess(marks));
+      String response = response(id, marks, assess(marks));
+      LOG.info(response);
+      return response;
     } catch (Exception e) {
-      logger.error("An unexpected error occurred", e);
+      LOG.error("An unexpected error occurred", e);
       throw new RemoteException(e.getMessage());
     }
   }

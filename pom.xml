@@ -5,16 +5,16 @@
 
   <groupId>au.com.martinponce</groupId>
   <artifactId>honours</artifactId>
-  <packaging>pom</packaging>
   <version>0.1.0-SNAPSHOT</version>
+  <name>honours parent</name>
+  <description>rmi client/server parent project for csi3344 assignment</description>
+  <packaging>pom</packaging>
 
-  <name>honours assessment</name>
-  <description>csi3344 assignment</description>
   <developers>
     <developer>
-      <id>mp</id>
+      <id>10371381</id>
       <name>Martin Ponce</name>
-      <email>martin.ponce@outlook.com</email>
+      <email>mponce@our.ecu.edu.au</email>
     </developer>
   </developers>
 
@@ -28,6 +28,7 @@
     <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
     <surefire.failsafe.version>3.0.0-M3</surefire.failsafe.version>
     <junit.platform.surefire.version>1.3.2</junit.platform.surefire.version>
+    <maven.assembly.version>3.1.1</maven.assembly.version>
   </properties>
 
   <modules>

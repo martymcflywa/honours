@@ -14,28 +14,28 @@ class HonoursEngineParameterValidationTest {
 
   @Test
   @DisplayName("Validate legal id test")
-  void validateIdSuccess() {
+  void validateIdSuccess() throws Exception {
     HonoursEngine sut = new HonoursEngine();
     assertDoesNotThrow(() -> sut.validateId("12345"));
   }
 
   @Test
   @DisplayName("Validate null id test")
-  void validateIdNull() {
+  void validateIdNull() throws Exception {
     HonoursEngine sut = new HonoursEngine();
     assertThrows(NullPointerException.class, () -> sut.validateId(null));
   }
 
   @Test
   @DisplayName("Validate empty id test")
-  void validateIdEmpty() {
+  void validateIdEmpty() throws Exception {
     HonoursEngine sut = new HonoursEngine();
     assertThrows(IllegalArgumentException.class, () -> sut.validateId(""));
   }
 
   @Test
   @DisplayName("Validate legal marks test")
-  void validateMarksSuccess() {
+  void validateMarksSuccess() throws Exception {
     List<Integer> marks = IntStream.rangeClosed(1, HonoursEngine.MAX_MARKS)
         .boxed()
         .collect(Collectors.toList());
@@ -45,7 +45,7 @@ class HonoursEngineParameterValidationTest {
 
   @Test
   @DisplayName("Validate marks less than minimum test")
-  void validateMarksLessThanMin() {
+  void validateMarksLessThanMin() throws Exception {
     List<Integer> marks =
         IntStream.range(1, HonoursEngine.MIN_MARKS - 1)
             .boxed()
@@ -57,7 +57,7 @@ class HonoursEngineParameterValidationTest {
 
   @Test
   @DisplayName("Validate marks greater than maximum test")
-  void validateMarksGreaterThanMax() {
+  void validateMarksGreaterThanMax() throws Exception {
     List<Integer> marks = IntStream.rangeClosed(1, HonoursEngine.MAX_MARKS + 1)
         .boxed()
         .collect(Collectors.toList());

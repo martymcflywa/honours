@@ -38,10 +38,10 @@ validatePath $interfacePath
 export CLASSPATH=$interfacePath;
 printenv | grep CLASSPATH;
 
-echo "Start rmiregistry as background process in debug mode";
-rmiregistry -J-Djava.rmi.server.logCalls=true &
+echo "Start rmiregistry as background process";
+rmiregistry & # -J-Djava.rmi.server.logCalls=true # use switch for debug mode
 
-echo "Wait $wait seconds, ensure rmiregistry has started";
+echo "Wait $wait seconds, make sure rmiregistry has started";
 sleep $wait
 
 echo "Start honours server as background process";
@@ -51,11 +51,10 @@ sleep 1
 echo "Start honours client in foreground";
 java -jar -Djava.security.policy=security.policy -Djava.rmi.server.hostname=localhost $clientAssembly
 
-echo "Press enter to exit";
-read junk
+echo "Kill honours client";
+pkill -f $clientAssembly;
+echo "Kill honours server";
+pkill -f $serverAssembly;
 echo "Kill rmiregistry";
 pkill -f rmiregistry
-echo "Kill honours server and client processes";
-pkill -f $serverAssembly;
-pkill -f $clientAssembly;
 echo "Done";

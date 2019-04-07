@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
-import java.util.Collection;
 
 public class Main {
 
@@ -22,12 +21,8 @@ public class Main {
   private static void init() {
     try {
       IAssess assessEngine = (IAssess) Naming.lookup(NAME);
-      Client client = new Client(assessEngine);
-      CommandlineInterface cli = new CommandlineInterface();
-      cli.start();
-      String id = cli.getId();
-      Collection<Integer> marks = cli.getMarks();
-      client.assess(id, marks);
+      CommandlineInterface cli = new CommandlineInterface(assessEngine);
+      cli.run();
     } catch (MalformedURLException e) {
       LOG.error("Malformed url", e);
     } catch (NotBoundException e) {

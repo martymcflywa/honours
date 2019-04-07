@@ -1,31 +1,57 @@
 package au.com.martinponce.honours.client;
 
+import au.com.martinponce.honours.core.Request;
 import au.com.martinponce.honours.core.Rules;
+import au.com.martinponce.honours.interfaces.IAssess;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import static java.lang.System.console;
+import static java.lang.System.*;
 
 class CommandlineInterface {
 
-  private String id;
-  private Collection<Integer> marks;
+  private IAssess assessEngine;
 
+  private static final String cursor = "> ";
   private static final Logger LOG =
       LoggerFactory.getLogger(CommandlineInterface.class);
 
-  void start() {
-    LOG.info("Welcome to the honours assessment, follow the instructions to " +
-        "determine your eligibility for honours study");
-    id = setId();
-    marks = setMarks();
+  CommandlineInterface(IAssess assessEngine) {
+    this.assessEngine = assessEngine;
+  }
+
+  void run() {
+    try {
+      LOG.info("Welcome to the honours assessment, follow the instructions to " +
+          "determine your eligibility for honours study");
+      String input;
+      do {
+        String id = setId();
+        Collection<Integer> marks = setMarks();
+        String response = sendRequest(id, marks);
+        LOG.info("[OUTPUT] {}", response);
+        LOG.info("[INPUT] Enter q to quit, or press enter to try again:");
+        input = console().readLine(cursor);
+      } while (!isQuit(input));
+      shutdown();
+    } catch (RemoteException e) {
+      LOG.error("Remote exception", e);
+      LOG.info("Try again");
+      run();
+    }
   }
 
   private String setId() {
-    return console().readLine("Enter your id: ");
+    String input;
+    do {
+      LOG.info("[INPUT] Enter your id:");
+      input = console().readLine(cursor);
+    } while (input.isEmpty());
+    return input;
   }
 
   private Collection<Integer> setMarks() {
@@ -38,7 +64,8 @@ class CommandlineInterface {
     int count = 1;
     do {
       try {
-        input = console().readLine(String.format("Mark %d: ", count));
+        LOG.info("[INPUT] Mark {}:", count);
+        input = console().readLine(cursor);
         int mark = Integer.parseInt(input);
         if (!valid(mark)) {
           LOG.error("Mark must be between 0 and 100, try again");
@@ -47,9 +74,9 @@ class CommandlineInterface {
         marks.add(Integer.parseInt(input));
         count++;
       } catch (NumberFormatException | NullPointerException e) {
-        if (input != null && input.equals("q")) {
+        if (isQuit(input)) {
           if (marks.size() < Rules.MIN_MARKS) {
-            LOG.warn("Need a minimum {} marks, enter another {} marks",
+            LOG.error("Need a minimum {} marks, enter another {} marks",
                 Rules.MIN_MARKS, Rules.MIN_MARKS - marks.size());
             continue;
           }
@@ -58,7 +85,7 @@ class CommandlineInterface {
         LOG.error("Input an integer, or q to quit");
       }
     } while (canAddMore(marks));
-
+    LOG.info("User input complete");
     return marks;
   }
 
@@ -73,11 +100,18 @@ class CommandlineInterface {
     return mark >= 0 && mark <= 100;
   }
 
-  String getId() {
-    return id;
+  private String sendRequest(String id, Collection<Integer> marks)
+      throws RemoteException {
+    LOG.info("Sending request to server for assessment");
+    return assessEngine.assess(new Request(id, marks));
   }
 
-  Collection<Integer> getMarks() {
-    return marks;
+  private boolean isQuit(String input) {
+    return input != null && input.equals("q");
+  }
+
+  private void shutdown() {
+    LOG.info("Shutting down");
+    exit(0);
   }
 }

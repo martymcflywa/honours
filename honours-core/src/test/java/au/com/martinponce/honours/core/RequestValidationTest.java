@@ -1,76 +1,85 @@
 package au.com.martinponce.honours.core;
 
+import au.com.martinponce.honours.interfaces.ICourse;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestInstance;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
+@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @DisplayName("Request validation test")
 class RequestValidationTest {
 
-  private String legalId = "123";
-  private Collection<Integer> legalMarks = IntStream.rangeClosed(1, Rules.MIN_MARKS)
-      .boxed()
-      .map(i -> Rules.PASS_MARK)
-      .collect(Collectors.toList());
+  private String studentId = "student123";
+  private String courseId = "course123";
+  private ICourse course;
+
+  @BeforeAll
+  void beforeAll() {
+    course = new Course(courseId);
+    IntStream.rangeClosed(1, Rules.MIN_MARKS)
+        .boxed()
+        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK));
+  }
 
   @Test
   @DisplayName("Validate legal request test")
   void validateLegalRequest() {
-    assertDoesNotThrow(() -> new Request(legalId, legalMarks));
+    assertDoesNotThrow(() -> new Request(studentId, course));
   }
 
   @Test
   @DisplayName("Validate null id test")
   void validateIdNull() {
-    assertThrows(NullPointerException.class, () -> new Request(null,
-        legalMarks));
+    assertThrows(NullPointerException.class,
+        () -> new Request(null, course));
   }
 
   @Test
   @DisplayName("Validate empty id test")
   void validateIdEmpty() {
-    assertThrows(IllegalArgumentException.class, () -> new Request("",
-        legalMarks));
+    assertThrows(IllegalArgumentException.class,
+        () -> new Request("", course));
   }
 
   @Test
   @DisplayName("Validate null marks test")
   void validateMarksNull() {
-    assertThrows(NullPointerException.class, () -> new Request(legalId, null));
+    assertThrows(NullPointerException.class,
+        () -> new Request(studentId, null));
   }
 
   @Test
   @DisplayName("Validate empty marks test")
   void validateMarksEmpty() {
-    assertThrows(IllegalArgumentException.class, () -> new Request(legalId,
-        new ArrayList<>()));
+    assertThrows(IllegalArgumentException.class,
+        () -> new Request(studentId, new Course(courseId)));
   }
 
   @Test
   @DisplayName("Validate marks less than minimum test")
   void validateMarksLessThanMin() {
-    List<Integer> marks =
-        IntStream.range(1, Rules.MIN_MARKS - 1)
-            .boxed()
-            .collect(Collectors.toList());
+    ICourse course = new Course(courseId);
+    IntStream.rangeClosed(1, Rules.MIN_MARKS - 1)
+        .boxed()
+        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK));
     assertThrows(IllegalArgumentException.class,
-        () -> new Request(legalId, marks));
+        () -> new Request(studentId, course));
   }
 
   @Test
   @DisplayName("Validate marks greater than maximum test")
   void validateMarksGreaterThanMax() {
-    List<Integer> marks = IntStream.rangeClosed(1, Rules.MAX_MARKS + 1)
+    ICourse course = new Course(courseId);
+    IntStream.rangeClosed(1, Rules.MAX_MARKS + 1)
         .boxed()
-        .collect(Collectors.toList());
+        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK));
     assertThrows(IllegalArgumentException.class,
-        () -> new Request(legalId, marks));
+        () -> new Request(studentId, course));
   }
 }

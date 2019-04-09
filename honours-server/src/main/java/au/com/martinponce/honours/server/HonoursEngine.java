@@ -3,13 +3,13 @@ package au.com.martinponce.honours.server;
 import au.com.martinponce.honours.core.Result;
 import au.com.martinponce.honours.core.Rules;
 import au.com.martinponce.honours.interfaces.IAssess;
+import au.com.martinponce.honours.interfaces.ICourse;
 import au.com.martinponce.honours.interfaces.IRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Collection;
 
 public class HonoursEngine extends UnicastRemoteObject implements IAssess {
 
@@ -38,8 +38,8 @@ public class HonoursEngine extends UnicastRemoteObject implements IAssess {
   @Override
   public String assess(IRequest request) throws RemoteException {
     try {
-      String response = response(request.id(), request.marks(),
-          Rules.apply(request.marks()));
+      String response = response(request.studentId(), request.course(),
+          Rules.apply(request.course()));
       LOG.info(response);
       return response;
     } catch (Exception e) {
@@ -48,9 +48,9 @@ public class HonoursEngine extends UnicastRemoteObject implements IAssess {
     }
   }
 
-  private String response(String id, Collection<Integer> marks, Result result) {
-    double average = Rules.average(marks);
-    double topEightAverage = Rules.average(Rules.top(marks, Rules.TOP_COUNT));
+  private String response(String id, ICourse course, Result result) {
+    double average = Rules.average(course.marks());
+    double topEightAverage = Rules.average(course.top(Rules.TOP_COUNT));
     switch (result) {
       case QUALIFIED:
         return String.format("%s, %.2f, %s", id, average, QUALIFIED_MESSAGE);

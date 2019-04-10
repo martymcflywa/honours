@@ -4,6 +4,7 @@ import au.com.martinponce.honours.core.Course;
 import au.com.martinponce.honours.core.Request;
 import au.com.martinponce.honours.core.Rules;
 import au.com.martinponce.honours.interfaces.IAssess;
+import au.com.martinponce.honours.interfaces.IAuth;
 import au.com.martinponce.honours.interfaces.ICourse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,13 +16,15 @@ import static java.lang.System.exit;
 
 class CommandlineInterface {
 
+  private IAuth auth;
   private IAssess assessEngine;
 
   private static final String cursor = "> ";
   private static final Logger LOG =
       LoggerFactory.getLogger(CommandlineInterface.class);
 
-  CommandlineInterface(IAssess assessEngine) {
+  CommandlineInterface(IAuth auth, IAssess assessEngine) {
+    this.auth = auth;
     this.assessEngine = assessEngine;
   }
 
@@ -31,6 +34,7 @@ class CommandlineInterface {
           "determine your eligibility for honours study");
       String input;
       do {
+        authUser();
         String studentId = setProperty("studentId", false);
         String courseId = setProperty("courseId", false);
         ICourse course = setCourse(courseId);
@@ -48,6 +52,12 @@ class CommandlineInterface {
     } catch (QuitInterrupt e) {
       shutdown();
     }
+  }
+
+  private void authUser() throws RemoteException, QuitInterrupt {
+    String user = setProperty("username", false);
+    String pass = setProperty("password", false);
+    auth.login(user, pass);
   }
 
   private ICourse setCourse(String courseId) throws QuitInterrupt {

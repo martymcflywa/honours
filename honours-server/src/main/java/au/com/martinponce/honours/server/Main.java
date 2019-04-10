@@ -1,5 +1,6 @@
 package au.com.martinponce.honours.server;
 
+import au.com.martinponce.honours.core.Names;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -12,7 +13,6 @@ import static java.lang.System.exit;
 
 public class Main {
 
-  private static final String NAME = "honours";
   private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
   public static void main(String[] args) {
@@ -22,10 +22,11 @@ public class Main {
 
   private static void initServer() {
     try {
-      Naming.rebind(NAME, new HonoursEngine());
-      Arrays.stream(Naming.list(NAME))
+      Naming.rebind(Names.AUTH_NAME, new Auth());
+      Naming.rebind(Names.HONOURS_NAME, new HonoursEngine());
+      Arrays.stream(Naming.list(Names.HONOURS_NAME))
           .forEach(i -> LOG.info("Server bound {}", i));
-      LOG.info("Server waiting...");
+      LOG.info("Server waiting");
     } catch (MalformedURLException e) {
       LOG.error("Malformed url", e);
       exit(1);

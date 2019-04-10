@@ -1,28 +1,27 @@
 package au.com.martinponce.honours.core;
 
+import au.com.martinponce.honours.interfaces.ICourse;
 import au.com.martinponce.honours.interfaces.IRequest;
 import org.apache.commons.lang3.Validate;
 
-import java.util.Collection;
-
 public class Request implements IRequest {
 
-  private String id;
-  private Collection<Integer> marks;
+  private String studentId;
+  private ICourse course;
 
-  public Request(String id, Collection<Integer> marks) {
-    this.id = validate(id);
-    this.marks = validate(marks);
+  public Request(String studentId, ICourse course) {
+    this.studentId = validate(studentId);
+    this.course = validate(course);
   }
 
   @Override
-  public String id() {
-    return id;
+  public String studentId() {
+    return studentId;
   }
 
   @Override
-  public Collection<Integer> marks() {
-    return marks;
+  public ICourse course() {
+    return course;
   }
 
   /**
@@ -32,26 +31,26 @@ public class Request implements IRequest {
    * @return The string, if valid, else throws.
    */
   private String validate(String string) {
-    Validate.notEmpty(string);
+    Validate.notEmpty(string, "Student id must not be empty or null");
     return string;
   }
 
   /**
-   * Validate a collection of marks.
-   * Must not be empty.
-   * Size must be between min and max inclusive.
-   * @param marks The marks to validate.
+   * Validate a course.
+   * Marks must not be empty.
+   * Marks tally must be between min and max inclusive.
+   * @param course The course to validate.
    * @return The collection of marks, if valid, else throws.
    */
-  private Collection<Integer> validate(Collection<Integer> marks) {
-    Validate.notEmpty(marks);
+  private ICourse validate(ICourse course) {
+    Validate.notEmpty(course.marks(), "Marks collection must not be empty");
     Validate.inclusiveBetween(
         Rules.MIN_MARKS,
         Rules.MAX_MARKS,
-        marks.size(),
+        course.markTally(),
         String.format(
             "Number of marks must be between %d and %d inclusive",
             Rules.MIN_MARKS, Rules.MAX_MARKS));
-    return marks;
+    return course;
   }
 }

@@ -1,39 +1,91 @@
 package au.com.martinponce.honours.core;
 
+import au.com.martinponce.honours.interfaces.ICourse;
+import au.com.martinponce.honours.interfaces.IMark;
+import au.com.martinponce.honours.interfaces.IUnit;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Comparator;
-import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-public class RulesTest {
+@DisplayName("Test honours study rules")
+class RulesTest {
+
+  private String courseId = "course123";
 
   @Test
   @DisplayName("Calculate mark average")
   void calculateMarkAverage() {
-    List<Integer> marks = IntStream.rangeClosed(1, 5)
+    Map<IUnit, IMark> marks = IntStream.rangeClosed(1, 5)
         .boxed()
-        .collect(Collectors.toList());
+        .collect(Collectors.toMap(
+            i -> new Unit(i.toString()),
+            Mark::new));
     double expected = 3;
     assertEquals(expected, Rules.average(marks));
   }
 
   @Test
-  @DisplayName("Top five marks")
-  void topFiveMarks() {
-    int limit = 5;
-    List<Integer> marks = IntStream.rangeClosed(1, 10)
+  @DisplayName("Denied rule test")
+  void denied() {
+    ICourse course = new Course(courseId);
+    IntStream.rangeClosed(1, Rules.MIN_MARKS)
         .boxed()
-        .collect(Collectors.toList());
-    List<Integer> expected = IntStream.rangeClosed(6, 10)
+        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK - 1));
+    assertEquals(Result.DENIED, Rules.apply(course));
+  }
+
+  @Test
+  @DisplayName("Qualified rule test")
+  void qualified() {
+    ICourse course = new Course(courseId);
+    IntStream.rangeClosed(1, Rules.MIN_MARKS)
         .boxed()
-        .sorted(Comparator.reverseOrder())
-        .collect(Collectors.toList());
-    assertEquals(expected,
-        Rules.top(marks, limit).collect(Collectors.toList()));
+        .forEach(i -> course.put(i.toString(), (int) Rules.AVG_FOR_QUALIFY));
+    assertEquals(Result.QUALIFIED, Rules.apply(course));
+  }
+
+  @Test
+  @DisplayName("Need assessment rule test")
+  void needAssessment() {
+    ICourse course = new Course(courseId);
+    IntStream.rangeClosed(1, Rules.TOP_COUNT)
+        .boxed()
+        .forEach(i -> course.put(i.toString(), (int) Rules.AVG_FOR_ASSESSMENT));
+    IntStream.rangeClosed(Rules.TOP_COUNT + 1, Rules.MAX_MARKS)
+        .boxed()
+        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK));
+    assertEquals(Result.NEED_ASSESSMENT, Rules.apply(course));
+  }
+
+  @Test
+  @DisplayName("Need permission rule test")
+  void needPermission() {
+    ICourse course = new Course(courseId);
+    IntStream.rangeClosed(1, Rules.TOP_COUNT)
+        .boxed()
+        .forEach(i -> course.put(i.toString(), (int) Rules.AVG_FOR_PERMISSION));
+    IntStream.rangeClosed(Rules.TOP_COUNT + 1, Rules.MIN_MARKS)
+        .boxed()
+        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK));
+    assertEquals(Result.NEED_PERMISSION, Rules.apply(course));
+  }
+
+  @Test
+  @DisplayName("Not qualified rule test")
+  void notQualified() {
+    ICourse course = new Course(courseId);
+    IntStream.rangeClosed(1, Rules.TOP_COUNT)
+        .boxed()
+        .forEach(i -> course.put(i.toString(),
+            (int) Rules.AVG_FOR_PERMISSION - 1));
+    IntStream.rangeClosed(Rules.TOP_COUNT + 1, Rules.MIN_MARKS)
+        .boxed()
+        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK));
+    assertEquals(Result.NOT_QUALIFIED, Rules.apply(course));
   }
 }

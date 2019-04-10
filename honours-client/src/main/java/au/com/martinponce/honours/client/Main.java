@@ -1,6 +1,8 @@
 package au.com.martinponce.honours.client;
 
+import au.com.martinponce.honours.core.Names;
 import au.com.martinponce.honours.interfaces.IAssess;
+import au.com.martinponce.honours.interfaces.IAuth;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +13,6 @@ import java.rmi.RemoteException;
 
 public class Main {
 
-  private static final String NAME = "honours";
   private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 
   public static void main(String[] args) {
@@ -20,8 +21,9 @@ public class Main {
 
   private static void init() {
     try {
-      IAssess assessEngine = (IAssess) Naming.lookup(NAME);
-      CommandlineInterface cli = new CommandlineInterface(assessEngine);
+      IAuth auth = (IAuth) Naming.lookup(Names.AUTH_NAME);
+      IAssess assessEngine = (IAssess) Naming.lookup(Names.HONOURS_NAME);
+      CommandlineInterface cli = new CommandlineInterface(auth, assessEngine);
       cli.run();
     } catch (MalformedURLException e) {
       LOG.error("Malformed url", e);

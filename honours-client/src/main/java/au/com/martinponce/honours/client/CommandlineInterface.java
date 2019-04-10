@@ -1,16 +1,17 @@
 package au.com.martinponce.honours.client;
 
+import au.com.martinponce.honours.core.Course;
 import au.com.martinponce.honours.core.Request;
 import au.com.martinponce.honours.core.Rules;
 import au.com.martinponce.honours.interfaces.IAssess;
+import au.com.martinponce.honours.interfaces.ICourse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collection;
 
-import static java.lang.System.*;
+import static java.lang.System.console;
+import static java.lang.System.exit;
 
 class CommandlineInterface {
 
@@ -30,88 +31,106 @@ class CommandlineInterface {
           "determine your eligibility for honours study");
       String input;
       do {
-        String id = setId();
-        Collection<Integer> marks = setMarks();
-        String response = sendRequest(id, marks);
+        String studentId = setProperty("studentId", false);
+        String courseId = setProperty("courseId", false);
+        ICourse course = setCourse(courseId);
+
+        String response = sendRequest(studentId, course);
         LOG.info("[OUTPUT] {}", response);
-        LOG.info("[INPUT] Enter q to quit, or press enter to try again:");
+        LOG.info("[INPUT] Press enter to try again, or q to quit");
         input = console().readLine(cursor);
-      } while (!isQuit(input));
-      shutdown();
+        onQuitControl(input);
+      } while (input.isEmpty());
     } catch (RemoteException e) {
       LOG.error("Remote exception", e);
       LOG.info("Try again");
       run();
+    } catch (QuitInterrupt e) {
+      shutdown();
     }
   }
 
-  private String setId() {
-    String input;
+  private ICourse setCourse(String courseId) throws QuitInterrupt {
+    LOG.info("Enter your unit id and its mark, for a minimum of {} units, " +
+        "and a maximum of {} units, or e to end input, q to quit",
+        Rules.MIN_MARKS,
+        Rules.MAX_MARKS);
+    ICourse course = new Course(courseId);
+    int tally = 1;
     do {
-      LOG.info("[INPUT] Enter your id:");
+      try {
+        String unitId = setProperty("unit id " + tally, true);
+        onEndControl(unitId, tally);
+        String mark = setProperty("mark " + tally, true);
+        onEndControl(mark, tally);
+        course.put(unitId, Integer.parseInt(mark));
+        tally++;
+      } catch (EndInputInterrupt e) {
+        break;
+      } catch (NumberFormatException e) {
+        LOG.error("Mark must be an integer, try again");
+      } catch (IllegalArgumentException e) {
+        LOG.error(e.getMessage());
+      }
+    } while (!course.hasMaxUnits());
+    LOG.info("User input complete");
+    return course;
+  }
+
+  private String sendRequest(String studentId, ICourse course)
+      throws RemoteException {
+    LOG.info("Sending request to server for assessment");
+    try {
+      return assessEngine.assess(new Request(studentId, course));
+    } catch (NullPointerException | IllegalArgumentException e) {
+      throw new RemoteException(e.getMessage());
+    }
+  }
+
+  private String setProperty(String property, boolean canEndInput) throws QuitInterrupt {
+    String input;
+    String endMessage = canEndInput ? ", or e to end input" : "";
+    do {
+      LOG.info("[INPUT] Enter your {}{}, or q to quit",
+          property,
+          endMessage);
       input = console().readLine(cursor);
+      onQuitControl(input);
     } while (input.isEmpty());
     return input;
   }
 
-  private Collection<Integer> setMarks() {
-    LOG.info("Enter your unit marks, minimum of {}, and maximum of {} marks, " +
-            "q to quit",
-        Rules.MIN_MARKS, Rules.MAX_MARKS);
+  private void onEndControl(String input, int tally) throws EndInputInterrupt {
+    if (input == null || !input.equals("e"))
+      return;
 
-    String input = null;
-    Collection<Integer> marks = new ArrayList<>();
-    int count = 1;
-    do {
-      try {
-        LOG.info("[INPUT] Mark {}:", count);
-        input = console().readLine(cursor);
-        int mark = Integer.parseInt(input);
-        if (!valid(mark)) {
-          LOG.error("Mark must be between 0 and 100, try again");
-          continue;
-        }
-        marks.add(Integer.parseInt(input));
-        count++;
-      } catch (NumberFormatException | NullPointerException e) {
-        if (isQuit(input)) {
-          if (marks.size() < Rules.MIN_MARKS) {
-            LOG.error("Need a minimum {} marks, enter another {} marks",
-                Rules.MIN_MARKS, Rules.MIN_MARKS - marks.size());
-            continue;
-          }
-          break;
-        }
-        LOG.error("Input an integer, or q to quit");
-      }
-    } while (canAddMore(marks));
-    LOG.info("User input complete");
-    return marks;
+    if (tally < Rules.MIN_MARKS) {
+      LOG.error("Still need to enter another {} marks",
+          Rules.MIN_MARKS - tally);
+      return;
+    }
+    throw new EndInputInterrupt();
   }
 
-  private boolean canAddMore(Collection<Integer> marks) {
-    boolean out = marks.size() < Rules.MAX_MARKS;
-    if (!out)
-      LOG.info("Maximum number of marks reached");
-    return out;
-  }
-
-  private boolean valid(int mark) {
-    return mark >= 0 && mark <= 100;
-  }
-
-  private String sendRequest(String id, Collection<Integer> marks)
-      throws RemoteException {
-    LOG.info("Sending request to server for assessment");
-    return assessEngine.assess(new Request(id, marks));
-  }
-
-  private boolean isQuit(String input) {
-    return input != null && input.equals("q");
+  private void onQuitControl(String input) throws QuitInterrupt {
+    if (input != null && input.equals("q"))
+      throw new QuitInterrupt();
   }
 
   private void shutdown() {
     LOG.info("Shutting down");
     exit(0);
+  }
+
+  private class EndInputInterrupt extends Exception {
+    EndInputInterrupt() {
+      super();
+    }
+  }
+
+  private class QuitInterrupt extends Exception {
+    QuitInterrupt() {
+      super();
+    }
   }
 }

@@ -63,7 +63,7 @@ public class Course implements ICourse {
 
   @Override
   public boolean hasMaxUnits() {
-    return marks.size() > Rules.MAX_MARKS;
+    return marks.size() >= Rules.MAX_MARKS;
   }
 
   private String validate(String id) {

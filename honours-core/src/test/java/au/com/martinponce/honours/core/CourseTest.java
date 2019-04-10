@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -72,5 +71,25 @@ class CourseTest {
     lowMarks.forEach(i -> sut.put(i.toString(), i));
 
     assertEquals(expected, sut.top(Rules.TOP_COUNT));
+  }
+
+  @Test
+  @DisplayName("Has max units true test")
+  void hasMaxUnitsTrue() {
+    ICourse sut = new Course("course123");
+    IntStream.rangeClosed(1, Rules.MAX_MARKS)
+        .boxed()
+        .forEach(i -> sut.put(i.toString(), i));
+    assertTrue(sut.hasMaxUnits());
+  }
+
+  @Test
+  @DisplayName("Has max units false test")
+  void hasMaxUnitsFalse() {
+    ICourse sut = new Course("course123");
+    IntStream.rangeClosed(1, Rules.MAX_MARKS - 1)
+        .boxed()
+        .forEach(i -> sut.put(i.toString(), i));
+    assertFalse(sut.hasMaxUnits());
   }
 }

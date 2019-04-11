@@ -27,7 +27,7 @@ public class HonoursEngine extends UnicastRemoteObject implements IAssess {
       LoggerFactory.getLogger(HonoursEngine.class);
 
   HonoursEngine() throws RemoteException {
-    super();
+    super(0);
   }
 
   /**

@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import java.net.MalformedURLException;
 import java.rmi.Naming;
 import java.rmi.RemoteException;
+import java.rmi.registry.LocateRegistry;
 import java.util.Arrays;
 
 import static java.lang.System.exit;
@@ -22,6 +23,7 @@ public class Main {
 
   private static void initServer() {
     try {
+      LocateRegistry.createRegistry(1099);
       Naming.rebind(Names.AUTH_NAME, new Auth());
       Naming.rebind(Names.HONOURS_NAME, new HonoursEngine());
       Arrays.stream(Naming.list(Names.HONOURS_NAME))

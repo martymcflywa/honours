@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
-trap 'echo "\"${last_command}\" command exit code $?."' EXIT
+trap 'echo "${last_command} exit code $?"' EXIT
 
 # @author Martin Ponce 10371381
 #
@@ -16,8 +16,8 @@ trap 'echo "\"${last_command}\" command exit code $?."' EXIT
 # console of choice.
 #
 # 1) mvn clean verify; # to build the project
-# 1) java -jar -Djava.security.policy=security.policy ./honours-server/target/honours-server-0.1.0-SNAPSHOT-jar-with-dependencies.jar &; # as background process
-# 2) java -jar -Djava.security.policy=security.policy ./honours-client/target/honours-client-0.1.0-SNAPSHOT-jar-with-dependencies.jar
+# 1) java -jar -Djava.security.policy=security.policy ./honours-server/target/honours-server-1.0.0-SNAPSHOT-jar-with-dependencies.jar &; # as background process
+# 2) java -jar -Djava.security.policy=security.policy ./honours-client/target/honours-client-1.0.0-SNAPSHOT-jar-with-dependencies.jar
 
 validatePath() {
   if [ ! -f "$1" ]; then
@@ -26,8 +26,9 @@ validatePath() {
   fi
 }
 
-serverAssembly="./honours-server/target/honours-server-0.1.0-SNAPSHOT-jar-with-dependencies.jar";
-clientAssembly="./honours-client/target/honours-client-0.1.0-SNAPSHOT-jar-with-dependencies.jar";
+semver=1.0.0;
+serverAssembly="./honours-server/target/honours-server-$semver-SNAPSHOT-jar-with-dependencies.jar";
+clientAssembly="./honours-client/target/honours-client-$semver-SNAPSHOT-jar-with-dependencies.jar";
 wait=20;
 
 echo "Check java exists";

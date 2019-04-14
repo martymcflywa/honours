@@ -6,7 +6,9 @@ import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,10 +26,13 @@ class RepositoryTest {
   private int attempts = 1;
   private int mark = 50;
 
-  private HonoursEntityId id = new HonoursEntityId(
-      studentId, courseId, unitId);
-  private HonoursEntity entity = new HonoursEntity(
-      id, attempts, mark);
+  private HonoursEntityId id = new HonoursEntityId(studentId, courseId, unitId);
+  private HonoursEntity entity = new HonoursEntity(id, attempts, mark);
+  private List<HonoursEntity> entities = new ArrayList<HonoursEntity>() {
+    {
+      add(entity);
+    }
+  };
 
   @BeforeAll
   @Test
@@ -36,7 +41,7 @@ class RepositoryTest {
     loadConfig();
     configForTest();
     sut = new Repository(configuration);
-    assertDoesNotThrow(() -> sut.saveOrUpdate(entity));
+    assertDoesNotThrow(() -> sut.saveOrUpdate(entities));
   }
 
   @Test

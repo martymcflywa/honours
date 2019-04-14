@@ -24,6 +24,8 @@
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <commons.lang3.version>3.8.1</commons.lang3.version>
+    <hibernate.version>5.4.2.Final</hibernate.version>
+    <mysql.connector.version>8.0.15</mysql.connector.version>
     <slf4j.version>1.8.0-beta4</slf4j.version>
     <junit.platform.version>5.5.0-M1</junit.platform.version>
     <maven.compiler.plugin.version>3.8.0</maven.compiler.plugin.version>
@@ -35,6 +37,7 @@
   <modules>
     <module>honours-interfaces</module>
     <module>honours-core</module>
+    <module>honours-persist-hibernate</module>
     <module>honours-server</module>
     <module>honours-client</module>
   </modules>
@@ -45,6 +48,30 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>${commons.lang3.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-core</artifactId>
+        <version>${hibernate.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-jpamodelgen</artifactId>
+        <version>${hibernate.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>org.hibernate</groupId>
+        <artifactId>hibernate-c3p0</artifactId>
+        <version>${hibernate.version}</version>
+        <scope>compile</scope>
+      </dependency>
+      <dependency>
+        <groupId>mysql</groupId>
+        <artifactId>mysql-connector-java</artifactId>
+        <version>${mysql.connector.version}</version>
         <scope>compile</scope>
       </dependency>
       <dependency>

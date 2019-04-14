@@ -69,6 +69,14 @@ class RepositoryTest {
     assertTrue(actual.contains(entity));
   }
 
+  @Test
+  @DisplayName("Delete entities success test")
+  void deleteEntitiesSuccess() {
+    assertFalse(sut.get(studentId).isEmpty());
+    assertDoesNotThrow(() -> sut.delete(entities));
+    assertTrue(sut.get(studentId).isEmpty());
+  }
+
   private void loadConfig() {
     ClassLoader classLoader = Repository.class.getClassLoader();
     File file = new File(

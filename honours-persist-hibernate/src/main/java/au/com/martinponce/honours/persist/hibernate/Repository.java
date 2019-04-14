@@ -122,6 +122,18 @@ public class Repository implements IRepository {
     }
   }
 
+  @Override
+  public void delete(Collection<HonoursEntity> entities) {
+    try (Session session = factory.openSession()) {
+      session.beginTransaction();
+      entities.forEach(session::remove);
+      session.getTransaction().commit();
+    } catch (Exception e) {
+      LOG.error("Exception", e);
+      throw new RuntimeException(e);
+    }
+  }
+
   private Collection<HonoursEntity> get(
       Session session,
       CriteriaQuery<HonoursEntity> criteriaQuery,

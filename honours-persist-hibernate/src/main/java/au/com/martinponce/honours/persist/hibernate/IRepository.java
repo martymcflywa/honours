@@ -10,4 +10,5 @@ public interface IRepository {
   Collection<HonoursEntity> get(String studentId, String courseId);
   Collection<HonoursEntity> get(
       String studentId, String courseId, String unitId);
+  void delete(Collection<HonoursEntity> entities);
 }

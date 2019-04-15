@@ -40,17 +40,17 @@ public class Request implements IRequest {
    * Marks must not be empty.
    * Marks tally must be between min and max inclusive.
    * @param course The course to validate.
-   * @return The collection of marks, if valid, else throws.
+   * @return The collection of unitMarks, if valid, else throws.
    */
   private ICourse validate(ICourse course) {
-    Validate.notEmpty(course.marks(), "Marks collection must not be empty");
+    Validate.notEmpty(course.unitMarks(), "Marks collection must not be empty");
     Validate.inclusiveBetween(
-        Rules.MIN_MARKS,
-        Rules.MAX_MARKS,
+        Rules.MIN_MARK_COUNT,
+        Rules.MAX_MARK_COUNT,
         course.markTally(),
         String.format(
-            "Number of marks must be between %d and %d inclusive",
-            Rules.MIN_MARKS, Rules.MAX_MARKS));
+            "Number of unitMarks must be between %d and %d inclusive",
+            Rules.MIN_MARK_COUNT, Rules.MAX_MARK_COUNT));
     return course;
   }
 }

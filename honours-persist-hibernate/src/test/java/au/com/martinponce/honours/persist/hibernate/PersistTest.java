@@ -10,6 +10,7 @@ import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -66,7 +67,8 @@ class PersistTest {
   private void loadConfig() {
     ClassLoader classLoader = Repository.class.getClassLoader();
     File file = new File(
-        classLoader.getResource(Repository.CONFIG_FILENAME).getFile());
+        Objects.requireNonNull(
+            classLoader.getResource(Repository.CONFIG_FILENAME)).getFile());
     configuration = new Configuration().configure(file);
   }
 
@@ -76,9 +78,9 @@ class PersistTest {
 
   private ICourse initCourse(String courseId) {
     course = new Course(courseId);
-    IntStream.rangeClosed(1, Rules.MIN_MARKS)
+    IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
         .boxed()
-        .forEach(i -> course.put("unit" + i, Rules.PASS_MARK));
+        .forEach(i -> course.add("unit" + i, Rules.PASS_MARK));
     return course;
   }
 }

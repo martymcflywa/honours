@@ -14,14 +14,17 @@ import java.rmi.server.UnicastRemoteObject;
 public class HonoursEngine extends UnicastRemoteObject implements IAssess {
 
   private static final long serialVersionUID = 1L;
-  static final String QUALIFIED_MESSAGE = "QUALIFIES FOR HONOURS STUDY!";
-  static final String NEED_ASSESSMENT_MESSAGE = "MAY HAVE A GOOD CHANCE! Need" +
-      " further assessment!";
-  static final String NEED_PERMISSION_MESSAGE = "MAY HAVE A CHANCE! Must be " +
-      "carefully reassessed and get the coordinator's special permission!";
-  static final String NOT_QUALIFIED_MESSAGE = "DOES NOT QUALIFY FOR HONOURS " +
-      "STUDY! Try Masters By Coursework.";
-  static final String DENIED_MESSAGE = "TOO MANY FAILURES!";
+  static final String QUALIFIED_MESSAGE =
+      "QUALIFIES FOR HONOURS STUDY!";
+  static final String NEED_ASSESSMENT_MESSAGE =
+      "MAY HAVE A GOOD CHANCE! Need further assessment!";
+  static final String NEED_PERMISSION_MESSAGE =
+      "MAY HAVE A CHANCE! Must be carefully reassessed and get the " +
+          "coordinator's special permission!";
+  static final String NOT_QUALIFIED_MESSAGE =
+      "DOES NOT QUALIFY FOR HONOURS STUDY! Try Masters By Coursework.";
+  static final String DENIED_MESSAGE =
+      "TOO MANY FAILURES!";
 
   private static final Logger LOG =
       LoggerFactory.getLogger(HonoursEngine.class);
@@ -31,7 +34,7 @@ public class HonoursEngine extends UnicastRemoteObject implements IAssess {
   }
 
   /**
-   * @param request The request object containing student id and marks.
+   * @param request The request object containing student id and unitMarks.
    * @return The assessment result.
    * @throws RemoteException When errors occur.
    */
@@ -49,7 +52,7 @@ public class HonoursEngine extends UnicastRemoteObject implements IAssess {
   }
 
   private String response(String id, ICourse course, Result result) {
-    double average = Rules.average(course.marks());
+    double average = Rules.average(course.unitMarks());
     double topEightAverage = Rules.average(course.top(Rules.TOP_COUNT));
     switch (result) {
       case QUALIFIED:

@@ -9,7 +9,6 @@ public class HonoursEntity {
 
   @EmbeddedId
   private HonoursEntityId id;
-  private int attempts;
   private int mark;
 
   public HonoursEntity() {
@@ -17,10 +16,8 @@ public class HonoursEntity {
 
   public HonoursEntity(
       HonoursEntityId id,
-      int attempts,
       int mark) {
     this.id = id;
-    this.attempts = attempts;
     this.mark = mark;
   }
 
@@ -30,14 +27,6 @@ public class HonoursEntity {
 
   public void setId(HonoursEntityId id) {
     this.id = id;
-  }
-
-  public int getAttempts() {
-    return attempts;
-  }
-
-  public void setAttempts(int attempts) {
-    this.attempts = attempts;
   }
 
   public int getMark() {
@@ -66,12 +55,11 @@ public class HonoursEntity {
     if (!(o instanceof HonoursEntity)) return false;
     HonoursEntity that = (HonoursEntity) o;
     return Objects.equals(id, that.id)
-        && Objects.equals(attempts, that.attempts)
         && Objects.equals(mark, that.mark);
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, attempts, mark);
+    return Objects.hash(id, mark);
   }
 }

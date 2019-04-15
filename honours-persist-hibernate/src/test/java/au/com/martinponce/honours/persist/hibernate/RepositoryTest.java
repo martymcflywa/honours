@@ -9,6 +9,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -24,11 +25,10 @@ class RepositoryTest {
   private String studentId = "student123";
   private String courseId = "course123";
   private String unitId = "unit1";
-  private int attempts = 1;
   private int mark = 50;
 
   private HonoursEntityId id = new HonoursEntityId(studentId, courseId, unitId);
-  private HonoursEntity entity = new HonoursEntity(id, attempts, mark);
+  private HonoursEntity entity = new HonoursEntity(id, mark);
   private List<HonoursEntity> entities = new ArrayList<HonoursEntity>() {
     {
       add(entity);
@@ -91,7 +91,8 @@ class RepositoryTest {
   private void loadConfig() {
     ClassLoader classLoader = Repository.class.getClassLoader();
     File file = new File(
-        classLoader.getResource(Repository.CONFIG_FILENAME).getFile());
+        Objects.requireNonNull(
+            classLoader.getResource(Repository.CONFIG_FILENAME)).getFile());
     configuration = new Configuration().configure(file);
   }
 

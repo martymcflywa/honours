@@ -23,7 +23,7 @@ public class Repository implements IRepository {
 
   private static final Logger LOG = LoggerFactory.getLogger(Repository.class);
 
-  public Repository(Configuration configuration) {
+  Repository(Configuration configuration) {
     init(configuration);
   }
 

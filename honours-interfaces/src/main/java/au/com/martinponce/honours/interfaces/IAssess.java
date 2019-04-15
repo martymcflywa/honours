@@ -6,10 +6,11 @@ import java.rmi.RemoteException;
 public interface IAssess extends Remote {
 
   /**
-   * Assess course marks for honours eligibility.
-   * @param request The request object containing student id and marks.
+   * Assess course unit marks for honours eligibility.
+   * @param request The request object containing student id, course id and
+   * unit marks.
    * @return Message indicating honours eligibility.
-   * @throws RemoteException
+   * @throws RemoteException when an error occurs during assessment.
    */
   String assess(IRequest request) throws RemoteException;
 }

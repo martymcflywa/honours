@@ -63,8 +63,8 @@ class CommandlineInterface {
   private ICourse setCourse(String courseId) throws QuitInterrupt {
     LOG.info("Enter your unit id and its mark, for a minimum of {} units, " +
         "and a maximum of {} units, or e to end input, q to quit",
-        Rules.MIN_MARKS,
-        Rules.MAX_MARKS);
+        Rules.MIN_MARK_COUNT,
+        Rules.MAX_MARK_COUNT);
     ICourse course = new Course(courseId);
     int tally = 1;
     do {
@@ -73,7 +73,7 @@ class CommandlineInterface {
         onEndControl(unitId, tally);
         String mark = setProperty("mark " + tally, true);
         onEndControl(mark, tally);
-        course.put(unitId, Integer.parseInt(mark));
+        course.add(unitId, Integer.parseInt(mark));
         tally++;
       } catch (EndInputInterrupt e) {
         break;
@@ -114,9 +114,9 @@ class CommandlineInterface {
     if (input == null || !input.equals("e"))
       return;
 
-    if (tally < Rules.MIN_MARKS) {
-      LOG.error("Still need to enter another {} marks",
-          Rules.MIN_MARKS - tally);
+    if (tally < Rules.MIN_MARK_COUNT) {
+      LOG.error("Still need to enter another {} unitMarks",
+          Rules.MIN_MARK_COUNT - tally);
       return;
     }
     throw new EndInputInterrupt();

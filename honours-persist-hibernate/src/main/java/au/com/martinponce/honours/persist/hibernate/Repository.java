@@ -37,11 +37,14 @@ public class Repository implements IRepository {
   }
 
   @Override
-  public void saveOrUpdate(HonoursEntity entity) {
+  public void saveOrUpdate(Collection<HonoursEntity> entities) {
     try (Session session = factory.openSession()) {
       session.beginTransaction();
-      session.save(entity);
+      entities.forEach(session::saveOrUpdate);
       session.getTransaction().commit();
+    } catch (Exception e) {
+      LOG.error("Exception", e);
+      throw new RuntimeException(e);
     }
   }
 
@@ -113,6 +116,18 @@ public class Repository implements IRepository {
               unitId)
       };
       return get(session, cq, root, predicates);
+    } catch (Exception e) {
+      LOG.error("Exception", e);
+      throw new RuntimeException(e);
+    }
+  }
+
+  @Override
+  public void delete(Collection<HonoursEntity> entities) {
+    try (Session session = factory.openSession()) {
+      session.beginTransaction();
+      entities.forEach(session::remove);
+      session.getTransaction().commit();
     } catch (Exception e) {
       LOG.error("Exception", e);
       throw new RuntimeException(e);

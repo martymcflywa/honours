@@ -1,5 +1,6 @@
 package au.com.martinponce.honours.core;
 
+import au.com.martinponce.honours.interfaces.IUnit;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -12,36 +13,36 @@ class UnitTest {
   @DisplayName("Validate legal unit id test")
   void validateUnitIdLegal() {
     String expected = "123";
-    Unit sut = new Unit(expected);
+    IUnit sut = new Unit(expected, 1);
     assertEquals(expected, sut.id());
   }
 
   @Test
   @DisplayName("Validate null unit id test")
   void validateUnitIdNull() {
-    assertThrows(NullPointerException.class, () -> new Unit(null));
+    assertThrows(NullPointerException.class, () -> new Unit(null, 1));
   }
 
   @Test
   @DisplayName("Validate empty unit id test")
   void validateUnitIdEmpty() {
-    assertThrows(IllegalArgumentException.class, () -> new Unit(""));
+    assertThrows(IllegalArgumentException.class, () -> new Unit("", 1));
   }
 
   @Test
   @DisplayName("Unit equality true test")
   void unitEqualityTrue() {
     String id = "123";
-    Unit a = new Unit(id);
-    Unit b = new Unit(id);
+    IUnit a = new Unit(id, 1);
+    IUnit b = new Unit(id, 1);
     assertTrue(a.equals(b));
   }
 
   @Test
   @DisplayName("Unit equality false test")
   void unitEqualityFalse() {
-    Unit a = new Unit("123");
-    Unit b = new Unit("321");
+    IUnit a = new Unit("123", 1);
+    IUnit b = new Unit("321", 1);
     assertFalse(a.equals(b));
   }
 }

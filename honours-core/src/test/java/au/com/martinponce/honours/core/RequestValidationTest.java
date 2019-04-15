@@ -22,9 +22,9 @@ class RequestValidationTest {
   @BeforeAll
   void beforeAll() {
     course = new Course(courseId);
-    IntStream.rangeClosed(1, Rules.MIN_MARKS)
+    IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK));
+        .forEach(i -> course.add(i.toString(), Rules.PASS_MARK));
   }
 
   @Test
@@ -48,37 +48,37 @@ class RequestValidationTest {
   }
 
   @Test
-  @DisplayName("Validate null marks test")
+  @DisplayName("Validate null unitMarks test")
   void validateMarksNull() {
     assertThrows(NullPointerException.class,
         () -> new Request(studentId, null));
   }
 
   @Test
-  @DisplayName("Validate empty marks test")
+  @DisplayName("Validate empty unitMarks test")
   void validateMarksEmpty() {
     assertThrows(IllegalArgumentException.class,
         () -> new Request(studentId, new Course(courseId)));
   }
 
   @Test
-  @DisplayName("Validate marks less than minimum test")
+  @DisplayName("Validate unitMarks less than minimum test")
   void validateMarksLessThanMin() {
     ICourse course = new Course(courseId);
-    IntStream.rangeClosed(1, Rules.MIN_MARKS - 1)
+    IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT - 1)
         .boxed()
-        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK));
+        .forEach(i -> course.add(i.toString(), Rules.PASS_MARK));
     assertThrows(IllegalArgumentException.class,
         () -> new Request(studentId, course));
   }
 
   @Test
-  @DisplayName("Validate marks greater than maximum test")
+  @DisplayName("Validate unitMarks greater than maximum test")
   void validateMarksGreaterThanMax() {
     ICourse course = new Course(courseId);
-    IntStream.rangeClosed(1, Rules.MAX_MARKS + 1)
+    IntStream.rangeClosed(1, Rules.MAX_MARK_COUNT + 1)
         .boxed()
-        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK));
+        .forEach(i -> course.add(i.toString(), Rules.PASS_MARK));
     assertThrows(IllegalArgumentException.class,
         () -> new Request(studentId, course));
   }

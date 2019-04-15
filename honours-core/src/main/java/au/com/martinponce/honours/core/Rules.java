@@ -1,16 +1,17 @@
 package au.com.martinponce.honours.core;
 
 import au.com.martinponce.honours.interfaces.ICourse;
-import au.com.martinponce.honours.interfaces.IMark;
 import au.com.martinponce.honours.interfaces.IUnit;
 
-import java.util.Map;
+import java.util.Collection;
 import java.util.stream.Stream;
 
 public class Rules {
 
-  public static final int MIN_MARKS = 12;
-  public static final int MAX_MARKS = 30;
+  static final int MIN_MARK = 0;
+  static final int MAX_MARK = 100;
+  public static final int MIN_MARK_COUNT = 12;
+  public static final int MAX_MARK_COUNT = 30;
   public static final int PASS_MARK = 50;
   public static final double AVG_FOR_QUALIFY = 70d;
   public static final double AVG_FOR_ASSESSMENT = 80d;
@@ -20,15 +21,15 @@ public class Rules {
 
   /**
    * Returns the appropriate assessment result, based on the total average,
-   * and top marks average.
+   * and top unitMarks average.
    * @param course The course.
    * @return The result.
    */
   public static Result apply(ICourse course) {
-    double average = average(course.marks());
+    double average = average(course.unitMarks());
     double topEightAverage = average(course.top(Rules.TOP_COUNT));
 
-    if (isDenied(course.marks()))
+    if (isDenied(course.unitMarks()))
       return Result.DENIED;
     if (isQualified(average))
       return Result.QUALIFIED;
@@ -43,18 +44,18 @@ public class Rules {
   /**
    * Determine if student is denied for honours study.
    * Cannot have more than MAX_FAIL failed/incomplete units.
-   * @param marks The course unit marks.
+   * @param unitMarks The course unit marks.
    * @return true if failed/incomplete more than MAX_FAIL units.
    */
-  private static boolean isDenied(Map<IUnit, IMark> marks) {
-    return marks.values().stream()
+  private static boolean isDenied(Collection<IUnit> unitMarks) {
+    return unitMarks.stream()
         .filter(i -> i.mark() < Rules.PASS_MARK)
         .count() > Rules.MAX_FAILS;
   }
 
   /**
    * Determine if student is qualified for honours study.
-   * @param average The average marks.
+   * @param average The average unitMarks.
    * @return true if average is greater than or equal to AVG_FOR_QUALIFY.
    */
   private static boolean isQualified(double average) {
@@ -82,21 +83,21 @@ public class Rules {
   }
 
   /**
-   * Calculate average of submitted course marks.
-   * @param marks The course unit marks map.
-   * @return average of submitted course marks, at 2 decimal places.
+   * Calculate average of submitted course unitMarks.
+   * @param unitMarks The course unit marks.
+   * @return average of unit marks.
    */
-  public static double average(Map<IUnit, IMark> marks) {
-    return average(marks.values().stream());
+  public static double average(Collection<IUnit> unitMarks) {
+    return average(unitMarks.stream());
   }
 
   /**
-   * Calculate average of submitted course marks.
-   * @param marks The course unit marks values stream.
+   * Calculate average of submitted course unitMarks.
+   * @param unitMarks The course unit marks stream.
    * @return average of unit marks.
    */
-  private static double average(Stream<IMark> marks) {
-    return marks.mapToInt(IMark::mark)
+  private static double average(Stream<IUnit> unitMarks) {
+    return unitMarks.mapToInt(IUnit::mark)
         .average()
         .orElseThrow(() -> new NullPointerException("Mark average is null"));
   }

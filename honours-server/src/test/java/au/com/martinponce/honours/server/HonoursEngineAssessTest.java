@@ -22,9 +22,9 @@ class HonoursEngineAssessTest {
   @DisplayName("Assess denied")
   void assessDenied() throws Exception {
     ICourse course = new Course(courseId);
-    IntStream.rangeClosed(1, Rules.MIN_MARKS)
+    IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK - 1));
+        .forEach(i -> course.add(i.toString(), Rules.PASS_MARK - 1));
 
     HonoursEngine sut = new HonoursEngine();
     assertTrue(sut.assess(new Request(studentId, course))
@@ -35,9 +35,9 @@ class HonoursEngineAssessTest {
   @DisplayName("Assess qualified")
   void assessQualified() throws Exception {
     ICourse course = new Course(courseId);
-    IntStream.rangeClosed(1, Rules.MIN_MARKS)
+    IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(), (int) Rules.AVG_FOR_QUALIFY));
+        .forEach(i -> course.add(i.toString(), (int) Rules.AVG_FOR_QUALIFY));
 
     HonoursEngine sut = new HonoursEngine();
     assertTrue(sut.assess(new Request(studentId, course))
@@ -50,10 +50,10 @@ class HonoursEngineAssessTest {
     ICourse course = new Course(courseId);
     IntStream.rangeClosed(1, Rules.TOP_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(), (int) Rules.AVG_FOR_ASSESSMENT));
-    IntStream.rangeClosed(Rules.TOP_COUNT + 1, Rules.MAX_MARKS)
+        .forEach(i -> course.add(i.toString(), (int) Rules.AVG_FOR_ASSESSMENT));
+    IntStream.rangeClosed(Rules.TOP_COUNT + 1, Rules.MAX_MARK_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK));
+        .forEach(i -> course.add(i.toString(), Rules.PASS_MARK));
 
     HonoursEngine sut = new HonoursEngine();
     assertTrue(sut.assess(new Request(studentId, course))
@@ -66,10 +66,10 @@ class HonoursEngineAssessTest {
     ICourse course = new Course(courseId);
     IntStream.rangeClosed(1, Rules.TOP_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(), (int) Rules.AVG_FOR_PERMISSION));
-    IntStream.rangeClosed(Rules.TOP_COUNT + 1, Rules.MIN_MARKS)
+        .forEach(i -> course.add(i.toString(), (int) Rules.AVG_FOR_PERMISSION));
+    IntStream.rangeClosed(Rules.TOP_COUNT + 1, Rules.MIN_MARK_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK));
+        .forEach(i -> course.add(i.toString(), Rules.PASS_MARK));
 
     HonoursEngine sut = new HonoursEngine();
     assertTrue(sut.assess(new Request(studentId, course))
@@ -82,11 +82,11 @@ class HonoursEngineAssessTest {
     ICourse course = new Course(courseId);
     IntStream.rangeClosed(1, Rules.TOP_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(),
+        .forEach(i -> course.add(i.toString(),
             (int) Rules.AVG_FOR_PERMISSION - 1));
-    IntStream.rangeClosed(Rules.TOP_COUNT + 1, Rules.MIN_MARKS)
+    IntStream.rangeClosed(Rules.TOP_COUNT + 1, Rules.MIN_MARK_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK));
+        .forEach(i -> course.add(i.toString(), Rules.PASS_MARK));
 
     HonoursEngine sut = new HonoursEngine();
     assertTrue(sut.assess(new Request(studentId, course))
@@ -97,9 +97,9 @@ class HonoursEngineAssessTest {
   @DisplayName("Assess null studentId")
   void assessNullId() throws Exception {
     ICourse course = new Course(courseId);
-    IntStream.rangeClosed(1, Rules.MIN_MARKS)
+    IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(), i));
+        .forEach(i -> course.add(i.toString(), i));
     HonoursEngine sut = new HonoursEngine();
     assertThrows(NullPointerException.class,
         () -> sut.assess(new Request(null, course)));
@@ -109,16 +109,16 @@ class HonoursEngineAssessTest {
   @DisplayName("Assess empty studentId")
   void assessEmptyId() throws Exception {
     ICourse course = new Course(courseId);
-    IntStream.rangeClosed(1, Rules.MIN_MARKS)
+    IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(), i));
+        .forEach(i -> course.add(i.toString(), i));
     HonoursEngine sut = new HonoursEngine();
     assertThrows(IllegalArgumentException.class,
         () -> sut.assess(new Request("", course)));
   }
 
   @Test
-  @DisplayName("Assess null marks")
+  @DisplayName("Assess null unitMarks")
   void assessNullMarks() throws Exception {
     HonoursEngine sut = new HonoursEngine();
     assertThrows(NullPointerException.class,
@@ -126,7 +126,7 @@ class HonoursEngineAssessTest {
   }
 
   @Test
-  @DisplayName("Assess empty marks")
+  @DisplayName("Assess empty unitMarks")
   void assessEmptyMarks() throws Exception {
     ICourse course = new Course(courseId);
     HonoursEngine sut = new HonoursEngine();

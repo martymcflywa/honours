@@ -1,21 +1,23 @@
 package au.com.martinponce.honours.core;
 
 import au.com.martinponce.honours.interfaces.ICourse;
-import au.com.martinponce.honours.interfaces.IMark;
 import au.com.martinponce.honours.interfaces.IUnit;
 import org.apache.commons.lang3.Validate;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.stream.Collectors;
 
 public class Course implements ICourse {
 
   private String id;
-  private Map<IUnit, IMark> marks;
+  private Collection<IUnit> unitMarks;
 
   public Course(String id) {
     this.id = validate(id);
-    marks = new HashMap<>();
+    unitMarks = new ArrayList<>();
   }
 
   @Override
@@ -24,46 +26,40 @@ public class Course implements ICourse {
   }
 
   @Override
-  public Map<IUnit, IMark> marks() {
-    return Collections.unmodifiableMap(marks);
+  public Collection<IUnit> unitMarks() {
+    return Collections.unmodifiableCollection(unitMarks);
   }
 
   @Override
-  public IMark get(IUnit key) {
-    return marks.get(key);
+  public IUnit get(String unitId) {
+    return unitMarks.stream()
+        .filter(u -> u.id().equals(unitId))
+        .findFirst()
+        .orElse(null);
   }
 
   @Override
-  public void put(String unitId, int mark) {
-    IUnit key = new Unit(unitId);
-    if (!marks.containsKey(key)) {
-      marks.put(key, new Mark(mark));
-      return;
-    }
-    IMark existing = get(key);
-    existing.addAttempt();
-    existing.set(mark);
+  public void add(String unitId, int mark) {
+    Unit unit = new Unit(unitId, mark);
+    unitMarks.add(unit);
   }
 
   @Override
-  public Map<IUnit, IMark> top(int n) {
-    return new ArrayList<>(marks.entrySet()
-        .stream()
+  public Collection<IUnit> top(int n) {
+    return unitMarks.stream()
         .sorted(new MarkDescendingComparator())
-        .collect(Collectors.toList()))
-        .subList(0, n)
-        .stream()
-        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
+        .collect(Collectors.toList())
+        .subList(0, n);
   }
 
   @Override
   public int markTally() {
-    return marks.size();
+    return unitMarks.size();
   }
 
   @Override
   public boolean hasMaxUnits() {
-    return marks.size() >= Rules.MAX_MARKS;
+    return unitMarks.size() >= Rules.MAX_MARK_COUNT;
   }
 
   private String validate(String id) {
@@ -71,13 +67,10 @@ public class Course implements ICourse {
     return id;
   }
 
-  private class MarkDescendingComparator implements Comparator<Map.Entry<IUnit,
-      IMark>> {
+  private class MarkDescendingComparator implements Comparator<IUnit> {
     @Override
-    public int compare(Map.Entry<IUnit, IMark> a, Map.Entry<IUnit, IMark> b) {
-      IMark x = a.getValue();
-      IMark y = b.getValue();
-      return y.compareTo(x);
+    public int compare(IUnit a, IUnit b) {
+      return b.compareTo(a);
     }
   }
 }

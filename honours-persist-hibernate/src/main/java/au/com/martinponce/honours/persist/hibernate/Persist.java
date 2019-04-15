@@ -66,14 +66,13 @@ public class Persist extends UnicastRemoteObject implements IPersist {
   }
 
   private Collection<HonoursEntity> toEntities(IRequest request) {
-    return request.course().marks().entrySet().stream()
+    return request.course().unitMarks().stream()
         .map(e -> new HonoursEntity(
             new HonoursEntityId(
                 request.studentId(),
                 request.course().id(),
-                e.getKey().id()),
-            e.getValue().attempts(),
-            e.getValue().mark()))
+                e.id()),
+            e.mark()))
         .collect(Collectors.toList());
   }
 
@@ -87,7 +86,7 @@ public class Persist extends UnicastRemoteObject implements IPersist {
             new IllegalArgumentException("No entities found"));
     String studentId = first.studentId();
     ICourse course = new Course(first.courseId());
-    entities.forEach(e -> course.put(e.unitId(), e.getMark()));
+    entities.forEach(e -> course.add(e.unitId(), e.getMark()));
     return new Request(studentId, course);
   }
 }

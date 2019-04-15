@@ -1,12 +1,11 @@
 package au.com.martinponce.honours.core;
 
 import au.com.martinponce.honours.interfaces.ICourse;
-import au.com.martinponce.honours.interfaces.IMark;
 import au.com.martinponce.honours.interfaces.IUnit;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Map;
+import java.util.Collection;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -20,22 +19,21 @@ class RulesTest {
   @Test
   @DisplayName("Calculate mark average")
   void calculateMarkAverage() {
-    Map<IUnit, IMark> marks = IntStream.rangeClosed(1, 5)
+    Collection<IUnit> unitMarks = IntStream.rangeClosed(1, 5)
         .boxed()
-        .collect(Collectors.toMap(
-            i -> new Unit(i.toString()),
-            Mark::new));
+        .map(i -> new Unit("unit" + i, i))
+        .collect(Collectors.toList());
     double expected = 3;
-    assertEquals(expected, Rules.average(marks));
+    assertEquals(expected, Rules.average(unitMarks));
   }
 
   @Test
   @DisplayName("Denied rule test")
   void denied() {
     ICourse course = new Course(courseId);
-    IntStream.rangeClosed(1, Rules.MIN_MARKS)
+    IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK - 1));
+        .forEach(i -> course.add(i.toString(), Rules.PASS_MARK - 1));
     assertEquals(Result.DENIED, Rules.apply(course));
   }
 
@@ -43,9 +41,9 @@ class RulesTest {
   @DisplayName("Qualified rule test")
   void qualified() {
     ICourse course = new Course(courseId);
-    IntStream.rangeClosed(1, Rules.MIN_MARKS)
+    IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(), (int) Rules.AVG_FOR_QUALIFY));
+        .forEach(i -> course.add(i.toString(), (int) Rules.AVG_FOR_QUALIFY));
     assertEquals(Result.QUALIFIED, Rules.apply(course));
   }
 
@@ -55,10 +53,10 @@ class RulesTest {
     ICourse course = new Course(courseId);
     IntStream.rangeClosed(1, Rules.TOP_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(), (int) Rules.AVG_FOR_ASSESSMENT));
-    IntStream.rangeClosed(Rules.TOP_COUNT + 1, Rules.MAX_MARKS)
+        .forEach(i -> course.add(i.toString(), (int) Rules.AVG_FOR_ASSESSMENT));
+    IntStream.rangeClosed(Rules.TOP_COUNT + 1, Rules.MAX_MARK_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK));
+        .forEach(i -> course.add(i.toString(), Rules.PASS_MARK));
     assertEquals(Result.NEED_ASSESSMENT, Rules.apply(course));
   }
 
@@ -68,10 +66,10 @@ class RulesTest {
     ICourse course = new Course(courseId);
     IntStream.rangeClosed(1, Rules.TOP_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(), (int) Rules.AVG_FOR_PERMISSION));
-    IntStream.rangeClosed(Rules.TOP_COUNT + 1, Rules.MIN_MARKS)
+        .forEach(i -> course.add(i.toString(), (int) Rules.AVG_FOR_PERMISSION));
+    IntStream.rangeClosed(Rules.TOP_COUNT + 1, Rules.MIN_MARK_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK));
+        .forEach(i -> course.add(i.toString(), Rules.PASS_MARK));
     assertEquals(Result.NEED_PERMISSION, Rules.apply(course));
   }
 
@@ -81,11 +79,11 @@ class RulesTest {
     ICourse course = new Course(courseId);
     IntStream.rangeClosed(1, Rules.TOP_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(),
+        .forEach(i -> course.add(i.toString(),
             (int) Rules.AVG_FOR_PERMISSION - 1));
-    IntStream.rangeClosed(Rules.TOP_COUNT + 1, Rules.MIN_MARKS)
+    IntStream.rangeClosed(Rules.TOP_COUNT + 1, Rules.MIN_MARK_COUNT)
         .boxed()
-        .forEach(i -> course.put(i.toString(), Rules.PASS_MARK));
+        .forEach(i -> course.add(i.toString(), Rules.PASS_MARK));
     assertEquals(Result.NOT_QUALIFIED, Rules.apply(course));
   }
 }

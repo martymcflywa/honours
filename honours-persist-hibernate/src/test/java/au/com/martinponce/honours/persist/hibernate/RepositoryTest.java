@@ -15,6 +15,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @Tag("integration")
 @DisplayName("Repository test")
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class RepositoryTest {
 
   private Repository sut;
@@ -41,11 +42,18 @@ class RepositoryTest {
     loadConfig();
     configForTest();
     sut = new Repository(configuration);
+  }
+
+  @Test
+  @DisplayName("SaveOrUpdate success test")
+  @Order(1)
+  void saveOrUpdateSuccess() {
     assertDoesNotThrow(() -> sut.saveOrUpdate(entities));
   }
 
   @Test
   @DisplayName("Get by studentId success test")
+  @Order(2)
   void getByStudentIdSuccess() {
     Collection<HonoursEntity> actual = sut.get(studentId);
     assertEquals(1, actual.size());
@@ -54,6 +62,7 @@ class RepositoryTest {
 
   @Test
   @DisplayName("Get by studentId and courseId success test")
+  @Order(3)
   void getByStudentCourseIdSuccess() {
     Collection<HonoursEntity> actual = sut.get(studentId, courseId);
     assertEquals(1, actual.size());
@@ -62,6 +71,7 @@ class RepositoryTest {
 
   @Test
   @DisplayName("Get by studentId, courseId and unitId success test")
+  @Order(4)
   void getByStudentCourseUnitIdSuccess() {
     Collection<HonoursEntity> actual = sut.get(
         studentId, courseId, unitId);
@@ -71,6 +81,7 @@ class RepositoryTest {
 
   @Test
   @DisplayName("Delete entities success test")
+  @Order(5)
   void deleteEntitiesSuccess() {
     assertFalse(sut.get(studentId).isEmpty());
     assertDoesNotThrow(() -> sut.delete(entities));

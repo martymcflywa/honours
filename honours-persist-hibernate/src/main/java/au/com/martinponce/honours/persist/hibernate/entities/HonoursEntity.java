@@ -48,6 +48,18 @@ public class HonoursEntity {
     this.mark = mark;
   }
 
+  public String studentId() {
+    return id.getStudentId();
+  }
+
+  public String courseId() {
+    return id.getCourseId();
+  }
+
+  public String unitId() {
+    return id.getUnitId();
+  }
+
   @Override
   public boolean equals(Object o) {
     if (this == o) return true;

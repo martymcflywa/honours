@@ -2,6 +2,8 @@
 
 [![Build Status](https://travis-ci.org/martymcflywa/honours.svg?branch=master)](https://travis-ci.org/martymcflywa/honours)
 
+[![Coverage Status](https://coveralls.io/repos/github/martymcflywa/honours/badge.svg)](https://coveralls.io/github/martymcflywa/honours)
+
 Martin Ponce 10371381  
 Monday 20th May 2019
 

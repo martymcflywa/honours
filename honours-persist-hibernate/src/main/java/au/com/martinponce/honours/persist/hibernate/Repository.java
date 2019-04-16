@@ -14,6 +14,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.io.InputStream;
 import java.util.Collection;
 
 public class Repository implements IRepository {
@@ -23,8 +24,12 @@ public class Repository implements IRepository {
 
   private static final Logger LOG = LoggerFactory.getLogger(Repository.class);
 
-  Repository(Configuration configuration) {
-    init(configuration);
+  public Repository(InputStream config) {
+    this(new Configuration().addInputStream(config).configure());
+  }
+
+  Repository(Configuration config) {
+    init(config);
   }
 
   private void init(Configuration configuration) {

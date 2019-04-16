@@ -20,7 +20,7 @@ public class Persist extends UnicastRemoteObject implements IPersist {
   private IRepository repository;
   private static final Logger LOG = LoggerFactory.getLogger(Persist.class);
 
-  Persist(IRepository repository) throws RemoteException {
+  public Persist(IRepository repository) throws RemoteException {
     super(0);
     this.repository = repository;
   }

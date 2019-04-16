@@ -23,10 +23,10 @@ public class Main {
 
   private static void initServer() {
     try {
-      LocateRegistry.createRegistry(1099);
+      LocateRegistry.getRegistry(Names.RMI_PORT);
       Naming.rebind(Names.AUTH_NAME, new Auth());
       Naming.rebind(Names.HONOURS_NAME, new HonoursEngine());
-      Arrays.stream(Naming.list(Names.HONOURS_NAME))
+      Arrays.stream(Naming.list(Names.BASE_NAME))
           .forEach(i -> LOG.info("Server bound {}", i));
       LOG.info("Server waiting");
     } catch (MalformedURLException e) {

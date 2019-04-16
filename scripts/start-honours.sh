@@ -1,7 +1,5 @@
 #!/bin/bash
 set -e
-trap 'last_command=$current_command; current_command=$BASH_COMMAND' DEBUG
-trap 'echo "${last_command} exit code $?"' EXIT
 
 # @author Martin Ponce 10371381
 #
@@ -27,8 +25,13 @@ validatePath() {
 }
 
 semver=1.0.0;
+interfaces="./honours-interfaces/target/honours-interfaces-$semver-SNAPSHOT.jar";
+persistAssembly="./honours-persist/target/honours-persist-$semver-SNAPSHOT-jar-with-dependencies.jar";
 serverAssembly="./honours-server/target/honours-server-$semver-SNAPSHOT-jar-with-dependencies.jar";
 clientAssembly="./honours-client/target/honours-client-$semver-SNAPSHOT-jar-with-dependencies.jar";
+securityParam="-Djava.security.policy=security.policy";
+hostnameParam="-Djava.rmi.server.hostname=localhost";
+
 wait=20;
 
 echo "Check java exists";
@@ -36,19 +39,38 @@ java -version;
 echo "Check maven exists";
 mvn -version;
 echo "Building";
-mvn clean verify;
-echo "Check server executable exists at $serverAssembly";
+mvn clean package -Dmaven.test.skip=true;
+echo "Check remote interfaces exists $interfaces";
+validatePath $interfaces;
+echo "Check persist executable exists $persistAssembly";
+validatePath $persistAssembly;
+echo "Check server executable exists $serverAssembly";
 validatePath $serverAssembly;
 echo "Check client executable exists $clientAssembly";
 validatePath $clientAssembly;
 
-echo "Start honours server as background process";
-java -jar -Djava.security.policy=security.policy -Djava.rmi.server.hostname=localhost $serverAssembly &
-sleep 1
+echo "Add remote interfaces to classpath"
+export CLASSPATH=$interfaces;
+printenv | grep CLASSPATH;
 
+echo "Start rmiregistry as background process";
+rmiregistry -J-Djava.rmi.server.logCalls=true &
+echo "Wait $wait seconds for rmiregistry to begin";
+sleep $wait;
+
+echo "Start honours persist as background process";
+java -jar $securityParam $hostnameParam $persistAssembly &
+sleep 1;
+echo "Start honours server as background process";
+java -jar $securityParam $hostnameParam $serverAssembly &
+sleep 1;
 echo "Start honours client in foreground";
-java -jar -Djava.security.policy=security.policy -Djava.rmi.server.hostname=localhost $clientAssembly
+java -jar $securityParam $hostnameParam $clientAssembly
 
 echo "Kill honours server";
 pkill -f $serverAssembly;
+echo "Kill honours persist";
+pkill -f $persistAssembly;
+echo "Kill rmiregistry";
+pkill -f rmiregistry;
 echo "Done";

@@ -41,6 +41,7 @@
     <module>honours-interfaces</module>
     <module>honours-core</module>
     <module>honours-persist-hibernate</module>
+    <module>honours-persist</module>
     <module>honours-server</module>
     <module>honours-client</module>
   </modules>

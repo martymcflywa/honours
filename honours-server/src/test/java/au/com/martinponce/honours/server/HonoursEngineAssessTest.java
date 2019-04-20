@@ -174,6 +174,21 @@ class HonoursEngineAssessTest {
     assertDoesNotThrow(() -> sut.load(studentId, courseId));
   }
 
+  @Test
+  @DisplayName("Delete throws exception test")
+  void deleteThrowsException() throws Exception {
+    HonoursEngine sut = new HonoursEngine(new PersistNotImplemented());
+    assertThrows(RemoteException.class,
+        () -> sut.delete(studentId, courseId));
+  }
+
+  @Test
+  @DisplayName("Delete success test")
+  void deleteSuccessTest() throws Exception {
+    HonoursEngine sut = new HonoursEngine(new TestPersist());
+    assertDoesNotThrow(() -> sut.delete(studentId, courseId));
+  }
+
   private class TestPersist implements IPersist {
 
     @Override
@@ -187,7 +202,7 @@ class HonoursEngineAssessTest {
     }
 
     @Override
-    public void delete(IRequest request) throws RemoteException {
+    public void delete(String studentId, String courseId) throws RemoteException {
       // success
     }
   }
@@ -205,8 +220,8 @@ class HonoursEngineAssessTest {
     }
 
     @Override
-    public void delete(IRequest request) throws RemoteException {
-      throw new RemoteException("Delete not implemented");
+    public void delete(String studentId, String courseId) throws RemoteException {
+      throw new RemoteException("Get not implemented");
     }
   }
 }

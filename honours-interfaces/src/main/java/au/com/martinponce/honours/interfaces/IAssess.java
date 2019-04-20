@@ -30,4 +30,12 @@ public interface IAssess extends Remote {
    * @throws RemoteException when an error occurs during load.
    */
   IRequest load(String studentId, String courseId) throws RemoteException;
+
+  /**
+   * Delete all records for a student id and course id.
+   * @param studentId The student id to delete.
+   * @param courseId The course id to delete.
+   * @throws RemoteException when an error occurs during delete.
+   */
+  void delete(String studentId, String courseId) throws RemoteException;
 }

@@ -13,4 +13,12 @@ public interface IAssess extends Remote {
    * @throws RemoteException when an error occurs during assessment.
    */
   String assess(IRequest request) throws RemoteException;
+
+  /**
+   * Save course unit marks.
+   * @param request The request object containing student id, course id and
+   * unit marks.
+   * @throws RemoteException when an error occurs during save.
+   */
+  void save(IRequest request) throws RemoteException;
 }

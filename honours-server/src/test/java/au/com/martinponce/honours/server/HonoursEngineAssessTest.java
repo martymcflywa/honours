@@ -4,9 +4,13 @@ import au.com.martinponce.honours.core.Course;
 import au.com.martinponce.honours.core.Request;
 import au.com.martinponce.honours.core.Rules;
 import au.com.martinponce.honours.interfaces.ICourse;
+import au.com.martinponce.honours.interfaces.IPersist;
+import au.com.martinponce.honours.interfaces.IRequest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.rmi.RemoteException;
+import java.util.Collection;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -25,7 +29,7 @@ class HonoursEngineAssessTest {
         .boxed()
         .forEach(i -> course.add(i.toString(), Rules.PASS_MARK - 1));
 
-    HonoursEngine sut = new HonoursEngine();
+    HonoursEngine sut = new HonoursEngine(new PersistNotImplemented());
     assertTrue(sut.assess(new Request(studentId, course))
         .contains(HonoursEngine.DENIED_MESSAGE));
   }
@@ -38,7 +42,7 @@ class HonoursEngineAssessTest {
         .boxed()
         .forEach(i -> course.add(i.toString(), (int) Rules.AVG_FOR_QUALIFY));
 
-    HonoursEngine sut = new HonoursEngine();
+    HonoursEngine sut = new HonoursEngine(new PersistNotImplemented());
     assertTrue(sut.assess(new Request(studentId, course))
         .contains(HonoursEngine.QUALIFIED_MESSAGE));
   }
@@ -54,7 +58,7 @@ class HonoursEngineAssessTest {
         .boxed()
         .forEach(i -> course.add(i.toString(), Rules.PASS_MARK));
 
-    HonoursEngine sut = new HonoursEngine();
+    HonoursEngine sut = new HonoursEngine(new PersistNotImplemented());
     assertTrue(sut.assess(new Request(studentId, course))
         .contains(HonoursEngine.NEED_ASSESSMENT_MESSAGE));
   }
@@ -70,7 +74,7 @@ class HonoursEngineAssessTest {
         .boxed()
         .forEach(i -> course.add(i.toString(), Rules.PASS_MARK));
 
-    HonoursEngine sut = new HonoursEngine();
+    HonoursEngine sut = new HonoursEngine(new PersistNotImplemented());
     assertTrue(sut.assess(new Request(studentId, course))
         .contains(HonoursEngine.NEED_PERMISSION_MESSAGE));
   }
@@ -87,7 +91,7 @@ class HonoursEngineAssessTest {
         .boxed()
         .forEach(i -> course.add(i.toString(), Rules.PASS_MARK));
 
-    HonoursEngine sut = new HonoursEngine();
+    HonoursEngine sut = new HonoursEngine(new PersistNotImplemented());
     assertTrue(sut.assess(new Request(studentId, course))
         .contains(HonoursEngine.NOT_QUALIFIED_MESSAGE));
   }
@@ -99,7 +103,7 @@ class HonoursEngineAssessTest {
     IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
         .boxed()
         .forEach(i -> course.add(i.toString(), i));
-    HonoursEngine sut = new HonoursEngine();
+    HonoursEngine sut = new HonoursEngine(new PersistNotImplemented());
     assertThrows(NullPointerException.class,
         () -> sut.assess(new Request(null, course)));
   }
@@ -111,15 +115,15 @@ class HonoursEngineAssessTest {
     IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
         .boxed()
         .forEach(i -> course.add(i.toString(), i));
-    HonoursEngine sut = new HonoursEngine();
+    HonoursEngine sut = new HonoursEngine(new PersistNotImplemented());
     assertThrows(IllegalArgumentException.class,
         () -> sut.assess(new Request("", course)));
   }
 
   @Test
-  @DisplayName("Assess null unitMarks")
-  void assessNullMarks() throws Exception {
-    HonoursEngine sut = new HonoursEngine();
+  @DisplayName("Assess null course")
+  void assessNullCourse() throws Exception {
+    HonoursEngine sut = new HonoursEngine(new PersistNotImplemented());
     assertThrows(NullPointerException.class,
         () -> sut.assess(new Request(studentId, null)));
   }
@@ -128,8 +132,67 @@ class HonoursEngineAssessTest {
   @DisplayName("Assess empty unitMarks")
   void assessEmptyMarks() throws Exception {
     ICourse course = new Course(courseId);
-    HonoursEngine sut = new HonoursEngine();
+    HonoursEngine sut = new HonoursEngine(new PersistNotImplemented());
     assertThrows(IllegalArgumentException.class,
         () -> sut.assess(new Request(studentId, course)));
+  }
+
+  @Test
+  @DisplayName("Save throws exception test")
+  void saveThrowsException() throws Exception {
+    ICourse course = new Course(courseId);
+    IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
+        .boxed()
+        .forEach(i -> course.add(i.toString(), i));
+    HonoursEngine sut = new HonoursEngine(new PersistNotImplemented());
+    assertThrows(RemoteException.class,
+        () -> sut.save(new Request(studentId, course)));
+  }
+
+  @Test
+  @DisplayName("Save success test")
+  void saveSuccessTest() throws Exception {
+    ICourse course = new Course(courseId);
+    IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
+        .boxed()
+        .forEach(i -> course.add(i.toString(), i));
+    HonoursEngine sut = new HonoursEngine(new TestPersist());
+    assertDoesNotThrow(() -> sut.save(new Request(studentId, course)));
+  }
+
+  private class TestPersist implements IPersist {
+
+    @Override
+    public void put(IRequest request) throws RemoteException {
+      // success
+    }
+
+    @Override
+    public Collection<IRequest> get(IRequest request) throws RemoteException {
+      return null;
+    }
+
+    @Override
+    public void delete(IRequest request) throws RemoteException {
+      // success
+    }
+  }
+
+  private class PersistNotImplemented implements IPersist {
+
+    @Override
+    public void put(IRequest request) throws RemoteException {
+      throw new RemoteException("Not implemented");
+    }
+
+    @Override
+    public Collection<IRequest> get(IRequest request) throws RemoteException {
+      throw new RemoteException("Not implemented");
+    }
+
+    @Override
+    public void delete(IRequest request) throws RemoteException {
+      throw new RemoteException("Not implemented");
+    }
   }
 }

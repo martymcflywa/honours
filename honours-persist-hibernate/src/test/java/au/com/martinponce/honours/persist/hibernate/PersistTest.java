@@ -10,8 +10,6 @@ import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
@@ -26,20 +24,17 @@ class PersistTest {
   private Configuration configuration;
   private IPersist sut;
 
+  private String studentId = "student123";
+  private String courseId = "course123";
   private ICourse course;
-  private IRequest request;
-  private Collection<IRequest> expected;
+  private IRequest expected;
 
   @BeforeAll
   void beforeAll() throws Exception {
     loadConfig();
     configForTest();
-    String courseId = "course123";
-    String studentId = "student123";
     course = initCourse(courseId);
-    request = new Request(studentId, course);
-    expected = new ArrayList<>();
-    expected.add(request);
+    expected = new Request(studentId, course);
     IRepository repository = new Repository(configuration);
     sut = new Persist(repository);
   }
@@ -48,14 +43,14 @@ class PersistTest {
   @DisplayName("Put success test")
   @Order(1)
   void putSuccess() {
-    assertDoesNotThrow(() -> sut.put(request));
+    assertDoesNotThrow(() -> sut.put(expected));
   }
 
   @Test
   @DisplayName("Get success test")
   @Order(2)
   void getSuccess() throws Exception {
-    Collection<IRequest> actual = sut.get(request);
+    IRequest actual = sut.get(studentId, courseId);
     assertEquals(expected, actual);
   }
 
@@ -63,10 +58,10 @@ class PersistTest {
   @DisplayName("Delete success test")
   @Order(3)
   void deleteSuccess() throws Exception {
-    Collection<IRequest> actual = sut.get(request);
+    IRequest actual = sut.get(studentId, courseId);
     assertNotNull(actual);
-    assertDoesNotThrow(() -> sut.delete(request));
-    assertNull(sut.get(request));
+    assertDoesNotThrow(() -> sut.delete(expected));
+    assertNull(sut.get(studentId, courseId));
   }
 
   private void loadConfig() {

@@ -10,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.rmi.RemoteException;
-import java.util.Collection;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -168,7 +167,7 @@ class HonoursEngineAssessTest {
     }
 
     @Override
-    public Collection<IRequest> get(IRequest request) throws RemoteException {
+    public IRequest get(String studentId, String courseId) throws RemoteException {
       return null;
     }
 
@@ -186,7 +185,7 @@ class HonoursEngineAssessTest {
     }
 
     @Override
-    public Collection<IRequest> get(IRequest request) throws RemoteException {
+    public IRequest get(String studentId, String courseId) throws RemoteException {
       throw new RemoteException("Not implemented");
     }
 

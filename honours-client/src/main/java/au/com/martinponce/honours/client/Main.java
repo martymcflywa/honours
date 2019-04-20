@@ -11,6 +11,8 @@ import java.rmi.Naming;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 
+import static java.lang.System.exit;
+
 public class Main {
 
   private static final Logger LOG = LoggerFactory.getLogger(Main.class);
@@ -27,10 +29,13 @@ public class Main {
       cli.run();
     } catch (MalformedURLException e) {
       LOG.error("Malformed url", e);
+      exit(1);
     } catch (NotBoundException e) {
       LOG.error("Interface not bound", e);
+      exit(1);
     } catch (RemoteException e) {
       LOG.error("Remote exception", e);
+      exit(1);
     }
   }
 }

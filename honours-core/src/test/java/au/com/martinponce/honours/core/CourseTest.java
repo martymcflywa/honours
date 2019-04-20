@@ -87,4 +87,35 @@ class CourseTest {
         .forEach(i -> sut.add(i.toString(), i));
     assertFalse(sut.hasMaxUnits());
   }
+
+  @Test
+  @DisplayName("Equals true test")
+  void equalsTrue() {
+    String courseId = "course123";
+    ICourse a = new Course(courseId);
+    ICourse b = new Course(courseId);
+    IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
+        .boxed()
+        .forEach(i -> {
+          String unitId = String.format("unit%02d", i);
+          a.add(unitId, Rules.PASS_MARK);
+          b.add(unitId, Rules.PASS_MARK);
+        });
+    assertEquals(a, b);
+  }
+
+  @Test
+  @DisplayName("Equals false test")
+  void equalsFalse() {
+    ICourse a = new Course("course123");
+    ICourse b = new Course("course321");
+    IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
+        .boxed()
+        .forEach(i -> {
+          String unitId = String.format("unit%02d", i);
+          a.add(unitId, Rules.PASS_MARK);
+          b.add(unitId, Rules.PASS_MARK - 1);
+        });
+    assertNotEquals(a, b);
+  }
 }

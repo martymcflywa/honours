@@ -60,7 +60,8 @@ sleep $wait;
 
 echo "Start honours persist as background process";
 java -jar $securityParam $hostnameParam $persistAssembly &
-sleep 1;
+echo "Wait $wait seconds for honours persist to begin";
+sleep $wait;
 echo "Start honours server as background process";
 java -jar $securityParam $hostnameParam $serverAssembly &
 sleep 1;

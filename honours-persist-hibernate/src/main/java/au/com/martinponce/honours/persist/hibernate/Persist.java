@@ -12,8 +12,10 @@ import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.Collection;
+import java.util.*;
 import java.util.stream.Collectors;
+
+import static java.util.stream.Collectors.groupingBy;
 
 public class Persist extends UnicastRemoteObject implements IPersist {
 
@@ -37,11 +39,11 @@ public class Persist extends UnicastRemoteObject implements IPersist {
   }
 
   @Override
-  public IRequest get(IRequest request) throws RemoteException {
+  public Collection<IRequest> get(IRequest request) throws RemoteException {
     try {
       String studentId = request.studentId();
       Collection<HonoursEntity> entities = repository.get(studentId);
-      return toRequest(entities);
+      return toRequests(entities);
     } catch (Exception e) {
       LOG.error("Exception", e);
       throw new RemoteException(e.getMessage());
@@ -76,17 +78,29 @@ public class Persist extends UnicastRemoteObject implements IPersist {
         .collect(Collectors.toList());
   }
 
-  private IRequest toRequest(Collection<HonoursEntity> entities) {
+  private Collection<IRequest> toRequests(Collection<HonoursEntity> entities) {
     if (entities.isEmpty())
       return null;
 
-    HonoursEntity first = entities.stream()
-        .findFirst()
-        .orElseThrow(() ->
-            new IllegalArgumentException("No entities found"));
-    String studentId = first.studentId();
-    ICourse course = new Course(first.courseId());
-    entities.forEach(e -> course.add(e.unitId(), e.getMark()));
-    return new Request(studentId, course);
+    Set<Map.Entry<String, List<HonoursEntity>>> groupedByCourseId = entities
+        .stream()
+        .collect(groupingBy(HonoursEntity::courseId))
+        .entrySet();
+
+    Collection<IRequest> requests = new ArrayList<>();
+
+    for (Map.Entry<String, List<HonoursEntity>> entry : groupedByCourseId) {
+      List<HonoursEntity> list = entry.getValue();
+      HonoursEntity first = list.stream()
+          .findFirst()
+          .orElseThrow(
+              () -> new NullPointerException("Empty entities collection"));
+      String studentId = first.studentId();
+      String courseId = first.courseId();
+      ICourse course = new Course(courseId);
+      list.forEach(i -> course.add(i.unitId(), i.getMark()));
+      requests.add(new Request(studentId, course));
+    }
+    return requests;
   }
 }

@@ -4,6 +4,7 @@ import au.com.martinponce.honours.core.Result;
 import au.com.martinponce.honours.core.Rules;
 import au.com.martinponce.honours.interfaces.IAssess;
 import au.com.martinponce.honours.interfaces.ICourse;
+import au.com.martinponce.honours.interfaces.IPersist;
 import au.com.martinponce.honours.interfaces.IRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -12,6 +13,8 @@ import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
 
 public class HonoursEngine extends UnicastRemoteObject implements IAssess {
+
+  private IPersist persist;
 
   private static final long serialVersionUID = 1L;
   static final String QUALIFIED_MESSAGE =
@@ -29,8 +32,9 @@ public class HonoursEngine extends UnicastRemoteObject implements IAssess {
   private static final Logger LOG =
       LoggerFactory.getLogger(HonoursEngine.class);
 
-  HonoursEngine() throws RemoteException {
+  HonoursEngine(IPersist persist) throws RemoteException {
     super(0);
+    this.persist = persist;
   }
 
   /**
@@ -45,6 +49,16 @@ public class HonoursEngine extends UnicastRemoteObject implements IAssess {
           Rules.apply(request.course()));
       LOG.info(response);
       return response;
+    } catch (Exception e) {
+      LOG.error("An unexpected error occurred", e);
+      throw new RemoteException(e.getMessage());
+    }
+  }
+
+  @Override
+  public void save(IRequest request) throws RemoteException {
+    try {
+      persist.put(request);
     } catch (Exception e) {
       LOG.error("An unexpected error occurred", e);
       throw new RemoteException(e.getMessage());

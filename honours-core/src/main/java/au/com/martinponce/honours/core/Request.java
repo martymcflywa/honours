@@ -4,6 +4,8 @@ import au.com.martinponce.honours.interfaces.ICourse;
 import au.com.martinponce.honours.interfaces.IRequest;
 import org.apache.commons.lang3.Validate;
 
+import java.util.Objects;
+
 public class Request implements IRequest {
 
   private String studentId;
@@ -52,5 +54,19 @@ public class Request implements IRequest {
             "Number of unitMarks must be between %d and %d inclusive",
             Rules.MIN_MARK_COUNT, Rules.MAX_MARK_COUNT));
     return course;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof Request)) return false;
+    Request that = (Request) o;
+    return Objects.equals(studentId, that.studentId)
+        && Objects.equals(course, that.course);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(studentId, course);
   }
 }

@@ -1,6 +1,7 @@
 package au.com.martinponce.honours.core;
 
 import au.com.martinponce.honours.interfaces.ICourse;
+import au.com.martinponce.honours.interfaces.IRequest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,12 +9,11 @@ import org.junit.jupiter.api.TestInstance;
 
 import java.util.stream.IntStream;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-@DisplayName("Request validation test")
-class RequestValidationTest {
+@DisplayName("Request test")
+class RequestTest {
 
   private String studentId = "student123";
   private String courseId = "course123";
@@ -81,5 +81,33 @@ class RequestValidationTest {
         .forEach(i -> course.add(i.toString(), Rules.PASS_MARK));
     assertThrows(IllegalArgumentException.class,
         () -> new Request(studentId, course));
+  }
+
+  @Test
+  @DisplayName("Equals true test")
+  void equalsTrue() {
+    ICourse course = new Course(courseId);
+    IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
+        .boxed()
+        .forEach(i -> course.add(String.format("unit%02d", i), Rules.PASS_MARK));
+    IRequest a = new Request(studentId, course);
+    IRequest b = new Request(studentId, course);
+    assertEquals(a, b);
+  }
+
+  @Test
+  @DisplayName("Equals false test")
+  void equalsFalse() {
+    ICourse courseA = new Course("course123");
+    ICourse courseB = new Course("course321");
+    IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
+        .boxed()
+        .forEach(i -> {
+          courseA.add(String.format("unit%02d", i), Rules.PASS_MARK);
+          courseB.add(String.format("unit%03d", i), Rules.PASS_MARK + 1);
+        });
+    IRequest a = new Request("student123", courseA);
+    IRequest b = new Request("student321", courseA);
+    assertNotEquals(a, b);
   }
 }

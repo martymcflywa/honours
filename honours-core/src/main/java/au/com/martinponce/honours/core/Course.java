@@ -4,10 +4,7 @@ import au.com.martinponce.honours.interfaces.ICourse;
 import au.com.martinponce.honours.interfaces.IUnit;
 import org.apache.commons.lang3.Validate;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class Course implements ICourse {
@@ -65,6 +62,26 @@ public class Course implements ICourse {
   private String validate(String id) {
     Validate.notEmpty(id, "Course id must not be empty");
     return id;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) return true;
+    if (!(o instanceof  Course)) return false;
+    Course that = (Course) o;
+    return Objects.equals(id, that.id)
+        && Objects.equals(
+        unitMarks.stream()
+            .sorted(new MarkDescendingComparator())
+            .collect(Collectors.toList()),
+        that.unitMarks.stream()
+            .sorted(new MarkDescendingComparator())
+            .collect(Collectors.toList()));
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects.hash(id, unitMarks);
   }
 
   private class MarkDescendingComparator implements Comparator<IUnit> {

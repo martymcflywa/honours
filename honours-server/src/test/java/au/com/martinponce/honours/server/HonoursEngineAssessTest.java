@@ -159,6 +159,21 @@ class HonoursEngineAssessTest {
     assertDoesNotThrow(() -> sut.save(new Request(studentId, course)));
   }
 
+  @Test
+  @DisplayName("Load throws exception test")
+  void loadThrowsException() throws Exception {
+    HonoursEngine sut = new HonoursEngine(new PersistNotImplemented());
+    assertThrows(RemoteException.class,
+        () -> sut.load(studentId, courseId));
+  }
+
+  @Test
+  @DisplayName("Load success test")
+  void loadSuccessTest() throws Exception {
+    HonoursEngine sut = new HonoursEngine(new TestPersist());
+    assertDoesNotThrow(() -> sut.load(studentId, courseId));
+  }
+
   private class TestPersist implements IPersist {
 
     @Override
@@ -181,17 +196,17 @@ class HonoursEngineAssessTest {
 
     @Override
     public void put(IRequest request) throws RemoteException {
-      throw new RemoteException("Not implemented");
+      throw new RemoteException("Put not implemented");
     }
 
     @Override
     public IRequest get(String studentId, String courseId) throws RemoteException {
-      throw new RemoteException("Not implemented");
+      throw new RemoteException("Get not implemented");
     }
 
     @Override
     public void delete(IRequest request) throws RemoteException {
-      throw new RemoteException("Not implemented");
+      throw new RemoteException("Delete not implemented");
     }
   }
 }

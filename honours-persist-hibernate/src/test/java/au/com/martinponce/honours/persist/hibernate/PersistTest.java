@@ -10,6 +10,8 @@ import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.*;
 
 import java.io.File;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Objects;
 import java.util.stream.IntStream;
 
@@ -26,6 +28,7 @@ class PersistTest {
 
   private ICourse course;
   private IRequest request;
+  private Collection<IRequest> expected;
 
   @BeforeAll
   void beforeAll() throws Exception {
@@ -35,6 +38,8 @@ class PersistTest {
     String studentId = "student123";
     course = initCourse(courseId);
     request = new Request(studentId, course);
+    expected = new ArrayList<>();
+    expected.add(request);
     IRepository repository = new Repository(configuration);
     sut = new Persist(repository);
   }
@@ -50,15 +55,15 @@ class PersistTest {
   @DisplayName("Get success test")
   @Order(2)
   void getSuccess() throws Exception {
-    IRequest actual = sut.get(request);
-    assertEquals(request.studentId(), actual.studentId());
+    Collection<IRequest> actual = sut.get(request);
+    assertEquals(expected, actual);
   }
 
   @Test
   @DisplayName("Delete success test")
   @Order(3)
   void deleteSuccess() throws Exception {
-    IRequest actual = sut.get(request);
+    Collection<IRequest> actual = sut.get(request);
     assertNotNull(actual);
     assertDoesNotThrow(() -> sut.delete(request));
     assertNull(sut.get(request));
@@ -80,7 +85,9 @@ class PersistTest {
     course = new Course(courseId);
     IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
         .boxed()
-        .forEach(i -> course.add("unit" + i, Rules.PASS_MARK));
+        .forEach(i -> course.add(
+            String.format("unit%02d", i),
+            Rules.PASS_MARK));
     return course;
   }
 }

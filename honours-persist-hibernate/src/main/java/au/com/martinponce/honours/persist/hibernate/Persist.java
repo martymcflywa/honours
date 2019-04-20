@@ -48,15 +48,11 @@ public class Persist extends UnicastRemoteObject implements IPersist {
   }
 
   @Override
-  public void delete(IRequest request) throws RemoteException {
+  public void delete(String studentId, String courseId) throws RemoteException {
     try {
-      String studentId = request.studentId();
-      String courseId = request.course().id();
       Collection<HonoursEntity> entities = repository.get(studentId, courseId);
-
       if (entities.isEmpty())
         return;
-
       repository.delete(entities);
     } catch (Exception e) {
       LOG.error("Exception", e);

@@ -60,7 +60,7 @@ class PersistTest {
   void deleteSuccess() throws Exception {
     IRequest actual = sut.get(studentId, courseId);
     assertNotNull(actual);
-    assertDoesNotThrow(() -> sut.delete(expected));
+    assertDoesNotThrow(() -> sut.delete(studentId, courseId));
     assertNull(sut.get(studentId, courseId));
   }
 

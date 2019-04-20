@@ -65,6 +65,26 @@ public class HonoursEngine extends UnicastRemoteObject implements IAssess {
     }
   }
 
+  @Override
+  public IRequest load(String studentId, String courseId) throws RemoteException {
+    try {
+      return persist.get(studentId, courseId);
+    } catch (Exception e) {
+      LOG.error("An unexpected error occurred", e);
+      throw new RemoteException(e.getMessage());
+    }
+  }
+
+  @Override
+  public void delete(String studentId, String courseId) throws RemoteException {
+    try {
+      persist.delete(studentId, courseId);
+    } catch (Exception e) {
+      LOG.error("An unexpected error occurred", e);
+      throw new RemoteException(e.getMessage());
+    }
+  }
+
   private String response(String id, ICourse course, Result result) {
     double average = Rules.average(course.unitMarks());
     double topEightAverage = Rules.average(course.top(Rules.TOP_COUNT));

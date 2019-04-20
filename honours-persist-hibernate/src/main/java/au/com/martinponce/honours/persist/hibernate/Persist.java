@@ -12,10 +12,8 @@ import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
 import java.rmi.server.UnicastRemoteObject;
-import java.util.*;
+import java.util.Collection;
 import java.util.stream.Collectors;
-
-import static java.util.stream.Collectors.groupingBy;
 
 public class Persist extends UnicastRemoteObject implements IPersist {
 
@@ -39,10 +37,9 @@ public class Persist extends UnicastRemoteObject implements IPersist {
   }
 
   @Override
-  public Collection<IRequest> get(IRequest request) throws RemoteException {
+  public IRequest get(String studentId, String courseId) throws RemoteException {
     try {
-      String studentId = request.studentId();
-      Collection<HonoursEntity> entities = repository.get(studentId);
+      Collection<HonoursEntity> entities = repository.get(studentId, courseId);
       return toRequests(entities);
     } catch (Exception e) {
       LOG.error("Exception", e);
@@ -51,15 +48,11 @@ public class Persist extends UnicastRemoteObject implements IPersist {
   }
 
   @Override
-  public void delete(IRequest request) throws RemoteException {
+  public void delete(String studentId, String courseId) throws RemoteException {
     try {
-      String studentId = request.studentId();
-      String courseId = request.course().id();
       Collection<HonoursEntity> entities = repository.get(studentId, courseId);
-
       if (entities.isEmpty())
         return;
-
       repository.delete(entities);
     } catch (Exception e) {
       LOG.error("Exception", e);
@@ -78,29 +71,15 @@ public class Persist extends UnicastRemoteObject implements IPersist {
         .collect(Collectors.toList());
   }
 
-  private Collection<IRequest> toRequests(Collection<HonoursEntity> entities) {
+  private IRequest toRequests(Collection<HonoursEntity> entities) {
     if (entities.isEmpty())
       return null;
-
-    Set<Map.Entry<String, List<HonoursEntity>>> groupedByCourseId = entities
-        .stream()
-        .collect(groupingBy(HonoursEntity::courseId))
-        .entrySet();
-
-    Collection<IRequest> requests = new ArrayList<>();
-
-    for (Map.Entry<String, List<HonoursEntity>> entry : groupedByCourseId) {
-      List<HonoursEntity> list = entry.getValue();
-      HonoursEntity first = list.stream()
-          .findFirst()
-          .orElseThrow(
-              () -> new NullPointerException("Empty entities collection"));
-      String studentId = first.studentId();
-      String courseId = first.courseId();
-      ICourse course = new Course(courseId);
-      list.forEach(i -> course.add(i.unitId(), i.getMark()));
-      requests.add(new Request(studentId, course));
-    }
-    return requests;
+    HonoursEntity first = entities.stream()
+        .findFirst()
+        .orElseThrow(NullPointerException::new);
+    String studentId = first.studentId();
+    ICourse course = new Course(first.courseId());
+    entities.forEach(e -> course.add(e.unitId(), e.getMark()));
+    return new Request(studentId, course);
   }
 }

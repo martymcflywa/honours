@@ -10,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.rmi.RemoteException;
-import java.util.Collection;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -160,6 +159,36 @@ class HonoursEngineAssessTest {
     assertDoesNotThrow(() -> sut.save(new Request(studentId, course)));
   }
 
+  @Test
+  @DisplayName("Load throws exception test")
+  void loadThrowsException() throws Exception {
+    HonoursEngine sut = new HonoursEngine(new PersistNotImplemented());
+    assertThrows(RemoteException.class,
+        () -> sut.load(studentId, courseId));
+  }
+
+  @Test
+  @DisplayName("Load success test")
+  void loadSuccessTest() throws Exception {
+    HonoursEngine sut = new HonoursEngine(new TestPersist());
+    assertDoesNotThrow(() -> sut.load(studentId, courseId));
+  }
+
+  @Test
+  @DisplayName("Delete throws exception test")
+  void deleteThrowsException() throws Exception {
+    HonoursEngine sut = new HonoursEngine(new PersistNotImplemented());
+    assertThrows(RemoteException.class,
+        () -> sut.delete(studentId, courseId));
+  }
+
+  @Test
+  @DisplayName("Delete success test")
+  void deleteSuccessTest() throws Exception {
+    HonoursEngine sut = new HonoursEngine(new TestPersist());
+    assertDoesNotThrow(() -> sut.delete(studentId, courseId));
+  }
+
   private class TestPersist implements IPersist {
 
     @Override
@@ -168,12 +197,12 @@ class HonoursEngineAssessTest {
     }
 
     @Override
-    public Collection<IRequest> get(IRequest request) throws RemoteException {
+    public IRequest get(String studentId, String courseId) throws RemoteException {
       return null;
     }
 
     @Override
-    public void delete(IRequest request) throws RemoteException {
+    public void delete(String studentId, String courseId) throws RemoteException {
       // success
     }
   }
@@ -182,17 +211,17 @@ class HonoursEngineAssessTest {
 
     @Override
     public void put(IRequest request) throws RemoteException {
-      throw new RemoteException("Not implemented");
+      throw new RemoteException("Put not implemented");
     }
 
     @Override
-    public Collection<IRequest> get(IRequest request) throws RemoteException {
-      throw new RemoteException("Not implemented");
+    public IRequest get(String studentId, String courseId) throws RemoteException {
+      throw new RemoteException("Get not implemented");
     }
 
     @Override
-    public void delete(IRequest request) throws RemoteException {
-      throw new RemoteException("Not implemented");
+    public void delete(String studentId, String courseId) throws RemoteException {
+      throw new RemoteException("Get not implemented");
     }
   }
 }

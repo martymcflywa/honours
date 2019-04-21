@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 @DisplayName("Test honours study rules")
 class RulesTest {
 
-  private String courseId = "course123";
+  private final String COURSE_ID = "course123";
 
   @Test
   @DisplayName("Calculate mark average")
@@ -30,7 +30,7 @@ class RulesTest {
   @Test
   @DisplayName("Denied rule test")
   void denied() {
-    ICourse course = new Course(courseId);
+    ICourse course = new Course(COURSE_ID);
     IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
         .boxed()
         .forEach(i -> course.add(i.toString(), Rules.PASS_MARK - 1));
@@ -40,7 +40,7 @@ class RulesTest {
   @Test
   @DisplayName("Qualified rule test")
   void qualified() {
-    ICourse course = new Course(courseId);
+    ICourse course = new Course(COURSE_ID);
     IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
         .boxed()
         .forEach(i -> course.add(i.toString(), (int) Rules.AVG_FOR_QUALIFY));
@@ -50,7 +50,7 @@ class RulesTest {
   @Test
   @DisplayName("Need assessment rule test")
   void needAssessment() {
-    ICourse course = new Course(courseId);
+    ICourse course = new Course(COURSE_ID);
     IntStream.rangeClosed(1, Rules.TOP_COUNT)
         .boxed()
         .forEach(i -> course.add(i.toString(), (int) Rules.AVG_FOR_ASSESSMENT));
@@ -63,7 +63,7 @@ class RulesTest {
   @Test
   @DisplayName("Need permission rule test")
   void needPermission() {
-    ICourse course = new Course(courseId);
+    ICourse course = new Course(COURSE_ID);
     IntStream.rangeClosed(1, Rules.TOP_COUNT)
         .boxed()
         .forEach(i -> course.add(i.toString(), (int) Rules.AVG_FOR_PERMISSION));
@@ -76,7 +76,7 @@ class RulesTest {
   @Test
   @DisplayName("Not qualified rule test")
   void notQualified() {
-    ICourse course = new Course(courseId);
+    ICourse course = new Course(COURSE_ID);
     IntStream.rangeClosed(1, Rules.TOP_COUNT)
         .boxed()
         .forEach(i -> course.add(i.toString(),

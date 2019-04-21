@@ -15,13 +15,13 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("Request test")
 class RequestTest {
 
-  private String studentId = "student123";
-  private String courseId = "course123";
+  private final String STUDENT_ID = "student123";
+  private final String COURSE_ID = "course123";
   private ICourse course;
 
   @BeforeAll
   void beforeAll() {
-    course = new Course(courseId);
+    course = new Course(COURSE_ID);
     IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
         .boxed()
         .forEach(i -> course.add(i.toString(), Rules.PASS_MARK));
@@ -30,7 +30,7 @@ class RequestTest {
   @Test
   @DisplayName("Validate legal request test")
   void validateLegalRequest() {
-    assertDoesNotThrow(() -> new Request(studentId, course));
+    assertDoesNotThrow(() -> new Request(STUDENT_ID, course));
   }
 
   @Test
@@ -51,47 +51,47 @@ class RequestTest {
   @DisplayName("Validate null unitMarks test")
   void validateMarksNull() {
     assertThrows(NullPointerException.class,
-        () -> new Request(studentId, null));
+        () -> new Request(STUDENT_ID, null));
   }
 
   @Test
   @DisplayName("Validate empty unitMarks test")
   void validateMarksEmpty() {
     assertThrows(IllegalArgumentException.class,
-        () -> new Request(studentId, new Course(courseId)));
+        () -> new Request(STUDENT_ID, new Course(COURSE_ID)));
   }
 
   @Test
   @DisplayName("Validate unitMarks less than minimum test")
   void validateMarksLessThanMin() {
-    ICourse course = new Course(courseId);
+    ICourse course = new Course(COURSE_ID);
     IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT - 1)
         .boxed()
         .forEach(i -> course.add(i.toString(), Rules.PASS_MARK));
     assertThrows(IllegalArgumentException.class,
-        () -> new Request(studentId, course));
+        () -> new Request(STUDENT_ID, course));
   }
 
   @Test
   @DisplayName("Validate unitMarks greater than maximum test")
   void validateMarksGreaterThanMax() {
-    ICourse course = new Course(courseId);
+    ICourse course = new Course(COURSE_ID);
     IntStream.rangeClosed(1, Rules.MAX_MARK_COUNT + 1)
         .boxed()
         .forEach(i -> course.add(i.toString(), Rules.PASS_MARK));
     assertThrows(IllegalArgumentException.class,
-        () -> new Request(studentId, course));
+        () -> new Request(STUDENT_ID, course));
   }
 
   @Test
   @DisplayName("Equals true test")
   void equalsTrue() {
-    ICourse course = new Course(courseId);
+    ICourse course = new Course(COURSE_ID);
     IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
         .boxed()
         .forEach(i -> course.add(String.format("unit%02d", i), Rules.PASS_MARK));
-    IRequest a = new Request(studentId, course);
-    IRequest b = new Request(studentId, course);
+    IRequest a = new Request(STUDENT_ID, course);
+    IRequest b = new Request(STUDENT_ID, course);
     assertEquals(a, b);
   }
 

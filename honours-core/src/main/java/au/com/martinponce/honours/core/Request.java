@@ -8,22 +8,22 @@ import java.util.Objects;
 
 public class Request implements IRequest {
 
-  private String studentId;
-  private ICourse course;
+  private final String STUDENT_ID;
+  private final ICourse COURSE;
 
   public Request(String studentId, ICourse course) {
-    this.studentId = validate(studentId);
-    this.course = validate(course);
+    STUDENT_ID = validate(studentId);
+    COURSE = validate(course);
   }
 
   @Override
   public String studentId() {
-    return studentId;
+    return STUDENT_ID;
   }
 
   @Override
   public ICourse course() {
-    return course;
+    return COURSE;
   }
 
   /**
@@ -61,12 +61,12 @@ public class Request implements IRequest {
     if (this == o) return true;
     if (!(o instanceof Request)) return false;
     Request that = (Request) o;
-    return Objects.equals(studentId, that.studentId)
-        && Objects.equals(course, that.course);
+    return Objects.equals(studentId(), that.studentId())
+        && Objects.equals(course(), that.course());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(studentId, course);
+    return Objects.hash(studentId(), course());
   }
 }

@@ -146,6 +146,7 @@ public class Repository implements IRepository {
       Predicate[] predicates) {
     criteriaQuery.select(root).where(predicates);
     Query query = session.createQuery(criteriaQuery);
+    //noinspection unchecked
     return query.getResultList();
   }
 }

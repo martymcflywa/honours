@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 import static java.lang.System.exit;
 
-public class Main {
+class Main {
 
   private static final Logger LOG = LoggerFactory.getLogger(Main.class);
 

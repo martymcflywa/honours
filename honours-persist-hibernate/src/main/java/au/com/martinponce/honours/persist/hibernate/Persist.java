@@ -61,7 +61,7 @@ public class Persist extends UnicastRemoteObject implements IPersist {
   }
 
   private Collection<HonoursEntity> toEntities(IRequest request) {
-    return request.course().unitMarks().stream()
+    return request.course().unitMarks().values().stream()
         .map(e -> new HonoursEntity(
             new HonoursEntityId(
                 request.studentId(),

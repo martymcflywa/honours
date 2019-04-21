@@ -3,7 +3,7 @@ package au.com.martinponce.honours.core;
 import au.com.martinponce.honours.interfaces.ICourse;
 import au.com.martinponce.honours.interfaces.IUnit;
 
-import java.util.Collection;
+import java.util.Map;
 import java.util.stream.Stream;
 
 public class Rules {
@@ -47,8 +47,8 @@ public class Rules {
    * @param unitMarks The course unit marks.
    * @return true if failed/incomplete more than MAX_FAIL units.
    */
-  private static boolean isDenied(Collection<IUnit> unitMarks) {
-    return unitMarks.stream()
+  private static boolean isDenied(Map<String, IUnit> unitMarks) {
+    return unitMarks.values().stream()
         .filter(i -> i.mark() < Rules.PASS_MARK)
         .count() > Rules.MAX_FAILS;
   }
@@ -87,8 +87,8 @@ public class Rules {
    * @param unitMarks The course unit marks.
    * @return average of unit marks.
    */
-  public static double average(Collection<IUnit> unitMarks) {
-    return average(unitMarks.stream());
+  public static double average(Map<String, IUnit> unitMarks) {
+    return average(unitMarks.values().stream());
   }
 
   /**

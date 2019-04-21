@@ -1,14 +1,14 @@
 package au.com.martinponce.honours.interfaces;
 
 import java.io.Serializable;
-import java.util.Collection;
+import java.util.Map;
 
 public interface ICourse extends Serializable {
   String id();
-  Collection<IUnit> unitMarks();
+  Map<String, IUnit> unitMarks();
   IUnit get(String unitId);
   void add(String unitId, int mark);
-  Collection<IUnit> top(int n);
+  Map<String, IUnit> top(int n);
   int markTally();
   boolean hasMaxUnits();
   boolean equals(Object that);

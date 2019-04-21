@@ -10,11 +10,11 @@ import java.util.stream.Collectors;
 public class Course implements ICourse {
 
   private final String ID;
-  private final Collection<IUnit> UNIT_MARKS;
+  private final Map<String, IUnit> UNIT_MARKS;
 
   public Course(String id) {
     ID = validate(id);
-    UNIT_MARKS = new ArrayList<>();
+    UNIT_MARKS = new HashMap<>();
   }
 
   @Override
@@ -23,30 +23,30 @@ public class Course implements ICourse {
   }
 
   @Override
-  public Collection<IUnit> unitMarks() {
-    return Collections.unmodifiableCollection(UNIT_MARKS);
+  public Map<String, IUnit> unitMarks() {
+    return Collections.unmodifiableMap(UNIT_MARKS);
   }
 
   @Override
   public IUnit get(String unitId) {
-    return UNIT_MARKS.stream()
-        .filter(u -> u.id().equals(unitId))
-        .findFirst()
-        .orElse(null);
+    return UNIT_MARKS.get(unitId);
   }
 
   @Override
   public void add(String unitId, int mark) {
     Unit unit = new Unit(unitId, mark);
-    UNIT_MARKS.add(unit);
+    UNIT_MARKS.put(unitId, unit);
   }
 
   @Override
-  public Collection<IUnit> top(int n) {
-    return UNIT_MARKS.stream()
+  public Map<String, IUnit> top(int n) {
+    return new ArrayList<>(UNIT_MARKS.entrySet()
+        .stream()
         .sorted(new MarkDescendingComparator())
-        .collect(Collectors.toList())
-        .subList(0, n);
+        .collect(Collectors.toList()))
+        .subList(0, n)
+        .stream()
+        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
   }
 
   @Override
@@ -70,13 +70,7 @@ public class Course implements ICourse {
     if (!(o instanceof  Course)) return false;
     Course that = (Course) o;
     return Objects.equals(id(), that.id())
-        && Objects.equals(
-        UNIT_MARKS.stream()
-            .sorted(new MarkDescendingComparator())
-            .collect(Collectors.toList()),
-        UNIT_MARKS.stream()
-            .sorted(new MarkDescendingComparator())
-            .collect(Collectors.toList()));
+        && Objects.equals(unitMarks(), that.unitMarks());
   }
 
   @Override
@@ -84,10 +78,11 @@ public class Course implements ICourse {
     return Objects.hash(id(), unitMarks());
   }
 
-  private class MarkDescendingComparator implements Comparator<IUnit> {
+  private class MarkDescendingComparator implements Comparator<Map.Entry<String, IUnit>> {
+
     @Override
-    public int compare(IUnit a, IUnit b) {
-      return b.compareTo(a);
+    public int compare(Map.Entry<String, IUnit> a, Map.Entry<String, IUnit> b) {
+      return b.getValue().compareTo(a.getValue());
     }
   }
 }

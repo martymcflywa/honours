@@ -155,6 +155,12 @@
             </goals>
           </execution>
         </executions>
+        <configuration>
+          <excludes>
+            <exclude>**/Main.*</exclude>
+            <exclude>**/*_.*</exclude>
+          </excludes>
+        </configuration>
       </plugin>
     </plugins>
   </build>

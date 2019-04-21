@@ -23,9 +23,11 @@ class Main {
 
   private static void init() {
     try {
+      IUserInput input = new ConsoleInput();
       IAuth auth = (IAuth) Naming.lookup(Names.AUTH_NAME);
       IAssess assessEngine = (IAssess) Naming.lookup(Names.HONOURS_NAME);
-      CommandlineInterface cli = new CommandlineInterface(auth, assessEngine);
+      CommandlineInterface cli = new CommandlineInterface(
+          input, auth, assessEngine);
       cli.run();
     } catch (MalformedURLException e) {
       LOG.error("Malformed url", e);

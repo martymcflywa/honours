@@ -61,12 +61,12 @@ public class Request implements IRequest {
     if (this == o) return true;
     if (!(o instanceof Request)) return false;
     Request that = (Request) o;
-    return Objects.equals(STUDENT_ID, that.STUDENT_ID)
-        && Objects.equals(COURSE, that.COURSE);
+    return Objects.equals(studentId(), that.studentId())
+        && Objects.equals(course(), that.course());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(STUDENT_ID, COURSE);
+    return Objects.hash(studentId(), course());
   }
 }

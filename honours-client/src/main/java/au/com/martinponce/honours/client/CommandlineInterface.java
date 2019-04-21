@@ -6,24 +6,25 @@ import au.com.martinponce.honours.core.Rules;
 import au.com.martinponce.honours.interfaces.IAssess;
 import au.com.martinponce.honours.interfaces.IAuth;
 import au.com.martinponce.honours.interfaces.ICourse;
+import au.com.martinponce.honours.interfaces.IRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.rmi.RemoteException;
 
-import static java.lang.System.console;
 import static java.lang.System.exit;
 
 class CommandlineInterface {
 
+  private final IUserInput INPUT;
   private final IAuth AUTH;
   private final IAssess ASSESS_ENGINE;
 
-  private static final String cursor = "> ";
   private static final Logger LOG =
       LoggerFactory.getLogger(CommandlineInterface.class);
 
-  CommandlineInterface(IAuth auth, IAssess assessEngine) {
+  CommandlineInterface(IUserInput input, IAuth auth, IAssess assessEngine) {
+    INPUT = input;
     AUTH = auth;
     ASSESS_ENGINE = assessEngine;
   }
@@ -37,12 +38,15 @@ class CommandlineInterface {
         authUser();
         String studentId = setProperty("studentId", false);
         String courseId = setProperty("courseId", false);
-        ICourse course = setCourse(courseId);
+
+        ICourse course = loadCourse(studentId, courseId);
+        if (course == null)
+          course = setCourse(studentId, courseId);
 
         String response = sendRequest(studentId, course);
         LOG.info("[OUTPUT] {}", response);
         LOG.info("[INPUT] Press enter to try again, or q to quit");
-        input = console().readLine(cursor);
+        input = INPUT.read();
         onQuitControl(input);
       } while (input.isEmpty());
     } catch (RemoteException e) {
@@ -60,7 +64,28 @@ class CommandlineInterface {
     AUTH.login(user, pass);
   }
 
-  private ICourse setCourse(String courseId) throws QuitInterrupt {
+  private ICourse loadCourse(String studentId, String courseId) throws RemoteException {
+    try {
+      IRequest request = ASSESS_ENGINE.load(studentId, courseId);
+      if (request == null) {
+        LOG.info("Existing course not found for {} {}", studentId, courseId);
+        return null;
+      }
+      LOG.info("Existing course found {} {}", studentId, courseId);
+      ICourse course = new Course(courseId);
+      request.course().unitMarks()
+          .forEach(i -> {
+            LOG.info("Unit: {}, Mark: {}", i.id(), i.mark());
+            course.add(i.id(), i.mark());
+          });
+      return deleteCourse(studentId, courseId) ? null : course;
+    } catch (RemoteException e) {
+      LOG.error("Remote exception", e);
+      throw new RemoteException(e.getMessage());
+    }
+  }
+
+  private ICourse setCourse(String studentId, String courseId) throws QuitInterrupt {
     LOG.info("Enter your unit id and its mark, for a minimum of {} units, " +
         "and a maximum of {} units, or e to end input, q to quit",
         Rules.MIN_MARK_COUNT,
@@ -84,7 +109,56 @@ class CommandlineInterface {
       }
     } while (!course.hasMaxUnits());
     LOG.info("User input complete");
+    saveCourse(studentId, course);
     return course;
+  }
+
+  private void saveCourse(String studentId, ICourse course) {
+    try {
+      String input;
+      do {
+        LOG.info(
+            "[INPUT] s to save course details, or c to cancel, or q to quit");
+        input = INPUT.read();
+        onCancelControl(input);
+        onQuitControl(input);
+        onSaveControl(input, studentId, course);
+      } while (input.isEmpty());
+    } catch (CancelInputInterrupt e) {
+      LOG.info("Course not saved");
+    } catch (QuitInterrupt e) {
+      shutdown();
+    } catch (RemoteException e) {
+      LOG.error("Remote exception", e);
+      LOG.info("Try again");
+      saveCourse(studentId, course);
+    }
+  }
+
+  private boolean deleteCourse(String studentId, String courseId) {
+    try {
+      String input;
+      boolean output;
+      do {
+        LOG.info(
+            "[INPUT] d to delete course details, or c to cancel, or q to quit");
+        input = INPUT.read();
+        onCancelControl(input);
+        onQuitControl(input);
+        output = onDeleteControl(input, studentId, courseId);
+      } while (input.isEmpty());
+      return output;
+    } catch (CancelInputInterrupt e) {
+      LOG.info("Course not deleted");
+      return false;
+    } catch (QuitInterrupt e) {
+      shutdown();
+    } catch (RemoteException e) {
+      LOG.error("Remote exception", e);
+      LOG.info("Try again");
+      deleteCourse(studentId, courseId);
+    }
+    return false;
   }
 
   private String sendRequest(String studentId, ICourse course)
@@ -104,10 +178,35 @@ class CommandlineInterface {
       LOG.info("[INPUT] Enter your {}{}, or q to quit",
           property,
           endMessage);
-      input = console().readLine(cursor);
+      input = INPUT.read();
       onQuitControl(input);
     } while (input.isEmpty());
     return input;
+  }
+
+  private void onSaveControl(String input, String studentId, ICourse course)
+      throws RemoteException {
+    if (input == null || !input.equals("s"))
+      return;
+
+    LOG.info("Saving marks for {} {}", studentId, course.id());
+    ASSESS_ENGINE.save(new Request(studentId, course));
+  }
+
+  private boolean onDeleteControl(String input, String studentId, String courseId)
+      throws RemoteException {
+    if (input == null || !input.equals("d"))
+      return false;
+
+    LOG.info("Deleting marks for {} {}", studentId, courseId);
+    ASSESS_ENGINE.delete(studentId, courseId);
+    return true;
+  }
+
+  private void onCancelControl(String input) throws CancelInputInterrupt {
+    if (input == null || !input.equals("c"))
+      return;
+    throw new CancelInputInterrupt();
   }
 
   private void onEndControl(String input, int tally) throws EndInputInterrupt {
@@ -130,6 +229,12 @@ class CommandlineInterface {
   private void shutdown() {
     LOG.info("Shutting down");
     exit(0);
+  }
+
+  private class CancelInputInterrupt extends Exception {
+    CancelInputInterrupt() {
+      super();
+    }
   }
 
   private class EndInputInterrupt extends Exception {

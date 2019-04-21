@@ -1,6 +1,6 @@
 # CSI3344: Honours RMI
 
-[![Build Status](https://travis-ci.org/martymcflywa/honours.svg?branch=master)](https://travis-ci.org/martymcflywa/honours) [![Coverage Status](https://coveralls.io/repos/github/martymcflywa/honours/badge.svg?branch=master)](https://coveralls.io/github/martymcflywa/honours?branch=master)
+![Travis (.org)](https://img.shields.io/travis/martymcflywa/honours.svg?) ![Coveralls github](https://img.shields.io/coveralls/github/martymcflywa/honours.svg) ![Codacy grade](https://img.shields.io/codacy/grade/220174f7b8e746189207af9988f7ce0b.svg)
 
 Martin Ponce 10371381  
 Monday 20th May 2019

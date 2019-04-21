@@ -4,5 +4,5 @@ import java.rmi.Remote;
 import java.rmi.RemoteException;
 
 public interface IAuth extends Remote {
-  void login(String user, String pass) throws RemoteException;
+  boolean login(String user, String pass) throws RemoteException;
 }

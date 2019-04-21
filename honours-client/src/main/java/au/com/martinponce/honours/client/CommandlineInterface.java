@@ -20,6 +20,8 @@ class CommandlineInterface {
   private final IAuth AUTH;
   private final IAssess ASSESS_ENGINE;
 
+  private boolean isAuthenticated;
+
   private static final Logger LOG =
       LoggerFactory.getLogger(CommandlineInterface.class);
 
@@ -35,7 +37,9 @@ class CommandlineInterface {
           "determine your eligibility for honours study");
       String input;
       do {
-        authUser();
+        if (!isAuthenticated)
+          authUser();
+
         String studentId = setProperty("studentId", false);
         String courseId = setProperty("courseId", false);
 
@@ -61,7 +65,7 @@ class CommandlineInterface {
   void authUser() throws RemoteException, QuitInterrupt {
     String user = setProperty("username", false);
     String pass = setProperty("password", false);
-    AUTH.login(user, pass);
+    isAuthenticated = AUTH.login(user, pass);
   }
 
   ICourse loadCourse(String studentId, String courseId)

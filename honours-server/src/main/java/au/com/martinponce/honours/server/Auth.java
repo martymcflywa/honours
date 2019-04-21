@@ -22,10 +22,11 @@ public class Auth extends UnicastRemoteObject implements IAuth {
    * stage 2.
    * @param user The username.
    * @param pass The password.
+   * @return true if successfully authenticated, else throw.
    * @throws RemoteException on unexpected error.
    */
   @Override
-  public void login(String user, String pass) throws RemoteException {
+  public boolean login(String user, String pass) throws RemoteException {
     try {
       Validate.notEmpty(user, "User must not be null or empty");
       Validate.notEmpty(pass, "Pass must not be null or empty");
@@ -36,7 +37,7 @@ public class Auth extends UnicastRemoteObject implements IAuth {
 
     if (user.equals("admin") && pass.equals("admin")) {
       LOG.info("Login successful");
-      return;
+      return true;
     }
 
     String message = "Login failed";

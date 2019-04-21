@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
 import java.rmi.RemoteException;
+import java.util.Objects;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -123,7 +124,7 @@ class CommandlineInterfaceTest {
   void saveCourseSuccess() {
     ((TestInput) input).set("s");
     sut = new CommandlineInterface(input, auth, assess);
-    ICourse course = generateCourse("course123");
+    ICourse course = generateCourse();
     assertDoesNotThrow(() -> sut.saveCourse("student123", course));
   }
 
@@ -132,7 +133,7 @@ class CommandlineInterfaceTest {
   void saveCourseCancel() {
     ((TestInput) input).set("c");
     sut = new CommandlineInterface(input, auth, assess);
-    ICourse course = generateCourse("course123");
+    ICourse course = generateCourse();
     assertDoesNotThrow(() -> sut.saveCourse("student123", course));
   }
 
@@ -141,7 +142,7 @@ class CommandlineInterfaceTest {
   void saveCourseQuit() {
     ((TestInput) input).set("q");
     sut = new CommandlineInterface(input, auth, assess);
-    ICourse course = generateCourse("course123");
+    ICourse course = generateCourse();
     assertThrows(CommandlineInterface.QuitInterrupt.class,
         () -> sut.saveCourse("student123", course));
   }
@@ -191,7 +192,7 @@ class CommandlineInterfaceTest {
   @DisplayName("Send request success test")
   void sendRequestSuccess() throws Exception {
     sut = new CommandlineInterface(input, auth, assess);
-    ICourse course = generateCourse("course123");
+    ICourse course = generateCourse();
     assertNotNull(sut.sendRequest("student123", course));
   }
 
@@ -203,8 +204,8 @@ class CommandlineInterfaceTest {
         () -> sut.sendRequest("student123", new Course("course123")));
   }
 
-  private ICourse generateCourse(String courseId) {
-    ICourse course = new Course(courseId);
+  private ICourse generateCourse() {
+    ICourse course = new Course("course123");
     IntStream.rangeClosed(1, Rules.MIN_MARK_COUNT)
         .boxed()
         .forEach(i -> course.add(String.format("unit%02d", i), i));
@@ -236,11 +237,11 @@ class CommandlineInterfaceTest {
 
   private class EndInput implements IUserInput {
     private int i;
-    private final int MAX = Rules.MIN_MARK_COUNT * 2;
 
     @Override
     public String read() {
       i++;
+      int MAX = Rules.MIN_MARK_COUNT * 2;
       return i <= MAX ? String.valueOf(i) : "e";
     }
   }
@@ -248,10 +249,11 @@ class CommandlineInterfaceTest {
   private class TestAuth implements IAuth {
 
     @Override
-    public void login(String user, String pass) throws RemoteException {
+    public boolean login(String user, String pass) throws RemoteException {
       String success = "test";
       if (!(user.equals(success) && pass.equals(success)))
         throw new RemoteException("Login failed");
+      return true;
     }
   }
 
@@ -289,7 +291,7 @@ class CommandlineInterfaceTest {
     public IRequest load(String studentId, String courseId) throws RemoteException {
       if (studentId == null && courseId == null)
         throw new RemoteException();
-      if (!(studentId.equals(STUDENT_ID) && courseId.equals(COURSE_ID)))
+      if (!(Objects.equals(studentId, STUDENT_ID) && courseId.equals(COURSE_ID)))
         return null;
       return TEST_DATA;
     }

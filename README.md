@@ -1,5 +1,6 @@
 # CSI3344: Honours RMI
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/08772052ba9941e5be892f6860960bf8)](https://app.codacy.com/app/martymcflywa/honours?utm_source=github.com&utm_medium=referral&utm_content=martymcflywa/honours&utm_campaign=Badge_Grade_Dashboard)
 [![Build Status](https://travis-ci.org/martymcflywa/honours.svg?branch=master)](https://travis-ci.org/martymcflywa/honours) [![Coverage Status](https://coveralls.io/repos/github/martymcflywa/honours/badge.svg?branch=master)](https://coveralls.io/github/martymcflywa/honours?branch=master)
 
 Martin Ponce 10371381  

@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -54,18 +55,22 @@ class CourseTest {
   void topMarks() {
     Collection<IUnit> lowMarks = IntStream.rangeClosed(1, 2)
         .boxed()
-        .map(i -> new Unit("unit" + i, i))
+        .map(i -> new Unit(String.format("unit%02d", i), i))
         .collect(Collectors.toList());
     Collection<IUnit> topMarks = IntStream.rangeClosed(3, Rules.TOP_COUNT + 2)
         .boxed()
         .sorted(Collections.reverseOrder())
-        .map(i -> new Unit("unit" + i, i))
+        .map(i -> new Unit(String.format("unit%02d", i), i))
         .collect(Collectors.toList());
+    Map<String, IUnit> expected = topMarks.stream()
+        .collect(Collectors.toMap(
+            IUnit::id,
+            i -> new Unit(i.id(), i.mark())));
 
     ICourse sut = new Course("course123");
     topMarks.forEach(i -> sut.add(i.id(), i.mark()));
     lowMarks.forEach(i -> sut.add(i.id(), i.mark()));
-    assertEquals(topMarks, sut.top(Rules.TOP_COUNT));
+    assertEquals(expected, sut.top(Rules.TOP_COUNT));
   }
 
   @Test

@@ -5,7 +5,7 @@ import au.com.martinponce.honours.interfaces.IUnit;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import java.util.Collection;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
@@ -19,10 +19,12 @@ class RulesTest {
   @Test
   @DisplayName("Calculate mark average")
   void calculateMarkAverage() {
-    Collection<IUnit> unitMarks = IntStream.rangeClosed(1, 5)
+    Map<String, IUnit> unitMarks = IntStream.rangeClosed(1, 5)
         .boxed()
-        .map(i -> new Unit("unit" + i, i))
-        .collect(Collectors.toList());
+        .collect(Collectors.toMap(
+            i -> String.format("unit%02d", i),
+            i -> new Unit(String.format("unit%02d", i), i)
+        ));
     double expected = 3;
     assertEquals(expected, Rules.average(unitMarks));
   }

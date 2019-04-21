@@ -77,7 +77,7 @@ class CommandlineInterface {
       }
       LOG.info("[OUTPUT] Existing course found {} {}", studentId, courseId);
       ICourse course = new Course(courseId);
-      request.course().unitMarks()
+      request.course().unitMarks().values()
           .forEach(i -> {
             LOG.info("[OUTPUT] Unit: {}, Mark: {}", i.id(), i.mark());
             course.add(i.id(), i.mark());
@@ -103,7 +103,7 @@ class CommandlineInterface {
         String mark = setProperty("mark " + (tally + 1), true);
         onEndControl(mark, tally);
         course.add(unitId, Integer.parseInt(mark));
-        tally++;
+        tally = course.markTally();
       } catch (EndInputInterrupt e) {
         break;
       } catch (NumberFormatException e) {

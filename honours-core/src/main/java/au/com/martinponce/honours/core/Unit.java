@@ -7,22 +7,22 @@ import java.util.Objects;
 
 public class Unit implements IUnit {
 
-  private String id;
-  private int mark;
+  private final String ID;
+  private final int MARK;
 
   Unit(String id, int mark) {
-    this.id = validate(id);
-    this.mark = validate(mark);
+    ID = validate(id);
+    MARK = validate(mark);
   }
 
   @Override
   public String id() {
-    return id;
+    return ID;
   }
 
   @Override
   public int mark() {
-    return mark;
+    return MARK;
   }
 
   private String validate(String id) {
@@ -43,8 +43,8 @@ public class Unit implements IUnit {
 
   @Override
   public int compareTo(IUnit o) {
-    if (mark == o.mark()) return 0;
-    return mark < o.mark() ? -1 : 1;
+    if (MARK == o.mark()) return 0;
+    return MARK < o.mark() ? -1 : 1;
   }
 
   @Override
@@ -52,12 +52,12 @@ public class Unit implements IUnit {
     if (this == o) return true;
     if (!(o instanceof Unit)) return false;
     Unit that = (Unit) o;
-    return id.equals(that.id)
-        && mark == that.mark();
+    return ID.equals(that.ID)
+        && MARK == that.mark();
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, mark);
+    return Objects.hash(ID, MARK);
   }
 }

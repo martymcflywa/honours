@@ -35,7 +35,7 @@ class UnitTest {
     String id = "123";
     IUnit a = new Unit(id, 1);
     IUnit b = new Unit(id, 1);
-    assertTrue(a.equals(b));
+    assertEquals(a, b);
   }
 
   @Test
@@ -43,6 +43,6 @@ class UnitTest {
   void unitEqualityFalse() {
     IUnit a = new Unit("123", 1);
     IUnit b = new Unit("321", 1);
-    assertFalse(a.equals(b));
+    assertNotEquals(a, b);
   }
 }

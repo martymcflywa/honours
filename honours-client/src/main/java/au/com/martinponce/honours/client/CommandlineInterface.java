@@ -16,16 +16,16 @@ import static java.lang.System.exit;
 
 class CommandlineInterface {
 
-  private IAuth auth;
-  private IAssess assessEngine;
+  private final IAuth AUTH;
+  private final IAssess ASSESS_ENGINE;
 
   private static final String cursor = "> ";
   private static final Logger LOG =
       LoggerFactory.getLogger(CommandlineInterface.class);
 
   CommandlineInterface(IAuth auth, IAssess assessEngine) {
-    this.auth = auth;
-    this.assessEngine = assessEngine;
+    AUTH = auth;
+    ASSESS_ENGINE = assessEngine;
   }
 
   void run() {
@@ -57,7 +57,7 @@ class CommandlineInterface {
   private void authUser() throws RemoteException, QuitInterrupt {
     String user = setProperty("username", false);
     String pass = setProperty("password", false);
-    auth.login(user, pass);
+    AUTH.login(user, pass);
   }
 
   private ICourse setCourse(String courseId) throws QuitInterrupt {
@@ -91,7 +91,7 @@ class CommandlineInterface {
       throws RemoteException {
     LOG.info("Sending request to server for assessment");
     try {
-      return assessEngine.assess(new Request(studentId, course));
+      return ASSESS_ENGINE.assess(new Request(studentId, course));
     } catch (NullPointerException | IllegalArgumentException e) {
       throw new RemoteException(e.getMessage());
     }

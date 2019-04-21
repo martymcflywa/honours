@@ -24,8 +24,8 @@ class PersistTest {
   private Configuration configuration;
   private IPersist sut;
 
-  private String studentId = "student123";
-  private String courseId = "course123";
+  private final String STUDENT_ID = "student123";
+  private final String COURSE_ID = "course123";
   private ICourse course;
   private IRequest expected;
 
@@ -33,8 +33,8 @@ class PersistTest {
   void beforeAll() throws Exception {
     loadConfig();
     configForTest();
-    course = initCourse(courseId);
-    expected = new Request(studentId, course);
+    course = initCourse(COURSE_ID);
+    expected = new Request(STUDENT_ID, course);
     IRepository repository = new Repository(configuration);
     sut = new Persist(repository);
   }
@@ -50,7 +50,7 @@ class PersistTest {
   @DisplayName("Get success test")
   @Order(2)
   void getSuccess() throws Exception {
-    IRequest actual = sut.get(studentId, courseId);
+    IRequest actual = sut.get(STUDENT_ID, COURSE_ID);
     assertEquals(expected, actual);
   }
 
@@ -58,10 +58,10 @@ class PersistTest {
   @DisplayName("Delete success test")
   @Order(3)
   void deleteSuccess() throws Exception {
-    IRequest actual = sut.get(studentId, courseId);
+    IRequest actual = sut.get(STUDENT_ID, COURSE_ID);
     assertNotNull(actual);
-    assertDoesNotThrow(() -> sut.delete(studentId, courseId));
-    assertNull(sut.get(studentId, courseId));
+    assertDoesNotThrow(() -> sut.delete(STUDENT_ID, COURSE_ID));
+    assertNull(sut.get(STUDENT_ID, COURSE_ID));
   }
 
   private void loadConfig() {

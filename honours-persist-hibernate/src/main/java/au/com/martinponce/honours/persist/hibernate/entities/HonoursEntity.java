@@ -14,27 +14,17 @@ public class HonoursEntity {
   public HonoursEntity() {
   }
 
-  public HonoursEntity(
-      HonoursEntityId id,
-      int mark) {
+  public HonoursEntity(HonoursEntityId id, int mark) {
     this.id = id;
     this.mark = mark;
   }
 
-  public HonoursEntityId getId() {
+  private HonoursEntityId getId() {
     return id;
-  }
-
-  public void setId(HonoursEntityId id) {
-    this.id = id;
   }
 
   public int getMark() {
     return mark;
-  }
-
-  public void setMark(int mark) {
-    this.mark = mark;
   }
 
   public String studentId() {
@@ -54,12 +44,12 @@ public class HonoursEntity {
     if (this == o) return true;
     if (!(o instanceof HonoursEntity)) return false;
     HonoursEntity that = (HonoursEntity) o;
-    return Objects.equals(id, that.id)
-        && Objects.equals(mark, that.mark);
+    return Objects.equals(getId(), that.getId())
+        && Objects.equals(getMark(), that.getMark());
   }
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, mark);
+    return Objects.hash(getId(), getMark());
   }
 }

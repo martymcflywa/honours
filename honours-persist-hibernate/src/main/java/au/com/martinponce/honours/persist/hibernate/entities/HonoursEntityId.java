@@ -25,28 +25,16 @@ public class HonoursEntityId implements Serializable {
     this.unitId = unitId;
   }
 
-  public String getStudentId() {
+  String getStudentId() {
     return studentId;
   }
 
-  public void setStudentId(String studentId) {
-    this.studentId = studentId;
-  }
-
-  public String getCourseId() {
+  String getCourseId() {
     return courseId;
   }
 
-  public void setCourseId(String courseId) {
-    this.courseId = courseId;
-  }
-
-  public String getUnitId() {
+  String getUnitId() {
     return unitId;
-  }
-
-  public void setUnitId(String unitId) {
-    this.unitId = unitId;
   }
 
   @Override

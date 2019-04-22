@@ -158,6 +158,7 @@
         <configuration>
           <excludes>
             <exclude>**/Main.*</exclude>
+            <exclude>**/TestConfig.*</exclude>
             <exclude>**/*_.*</exclude>
           </excludes>
         </configuration>

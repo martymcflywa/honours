@@ -5,11 +5,9 @@ import au.com.martinponce.honours.persist.hibernate.entities.HonoursEntity;
 import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.*;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
 class RepositoryTest {
 
   private Repository sut;
-  private Configuration configuration;
 
   private final String STUDENT_ID = "student123";
   private final String COURSE_ID = "course123";
@@ -39,8 +36,7 @@ class RepositoryTest {
   @Test
   @DisplayName("SaveOrUpdate success test")
   void beforeAll() {
-    loadConfig();
-    configForTest();
+    Configuration configuration = TestConfig.load();
     sut = new Repository(configuration);
   }
 
@@ -86,17 +82,5 @@ class RepositoryTest {
     assertFalse(sut.get(STUDENT_ID).isEmpty());
     assertDoesNotThrow(() -> sut.delete(ENTITIES));
     assertTrue(sut.get(STUDENT_ID).isEmpty());
-  }
-
-  private void loadConfig() {
-    ClassLoader classLoader = Repository.class.getClassLoader();
-    File file = new File(
-        Objects.requireNonNull(
-            classLoader.getResource(Repository.CONFIG_FILENAME)).getFile());
-    configuration = new Configuration().configure(file);
-  }
-
-  private void configForTest() {
-    configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
   }
 }

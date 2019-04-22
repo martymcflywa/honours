@@ -9,10 +9,8 @@ import au.com.martinponce.honours.persist.hibernate.entities.HonoursEntity;
 import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.*;
 
-import java.io.File;
 import java.rmi.RemoteException;
 import java.util.Collection;
-import java.util.Objects;
 import java.util.stream.IntStream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,7 +21,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 class PersistTest {
 
-  private Configuration configuration;
   private IRepository repository;
   private IRepository failingRepository;
 
@@ -34,8 +31,7 @@ class PersistTest {
 
   @BeforeAll
   void beforeAll() {
-    loadConfig();
-    configForTest();
+    Configuration configuration = TestConfig.load();
     course = initCourse();
     expected = new Request(STUDENT_ID, course);
     repository = new Repository(configuration);
@@ -92,18 +88,6 @@ class PersistTest {
     Persist sut = new Persist(failingRepository);
     assertThrows(RemoteException.class,
         () -> sut.delete(STUDENT_ID, COURSE_ID));
-  }
-
-  private void loadConfig() {
-    ClassLoader classLoader = Repository.class.getClassLoader();
-    File file = new File(
-        Objects.requireNonNull(
-            classLoader.getResource(Repository.CONFIG_FILENAME)).getFile());
-    configuration = new Configuration().configure(file);
-  }
-
-  private void configForTest() {
-    configuration.setProperty("hibernate.hbm2ddl.auto", "create-drop");
   }
 
   private ICourse initCourse() {

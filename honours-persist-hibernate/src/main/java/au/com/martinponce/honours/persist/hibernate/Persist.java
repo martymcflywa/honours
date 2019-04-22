@@ -29,6 +29,8 @@ public class Persist extends UnicastRemoteObject implements IPersist {
   public void put(IRequest request) throws RemoteException {
     try {
       Collection<HonoursEntity> entities = toEntities(request);
+      LOG.info("Insert {} rows to the database", entities.size());
+      entities.forEach(e -> LOG.debug(e.toString()));
       repository.saveOrUpdate(entities);
     } catch (Exception e) {
       LOG.error("Exception", e);
@@ -40,6 +42,8 @@ public class Persist extends UnicastRemoteObject implements IPersist {
   public IRequest get(String studentId, String courseId) throws RemoteException {
     try {
       Collection<HonoursEntity> entities = repository.get(studentId, courseId);
+      LOG.info("Retrieve {} rows from the database", entities.size());
+      entities.forEach(e -> LOG.debug(e.toString()));
       return toRequests(entities);
     } catch (Exception e) {
       LOG.error("Exception", e);
@@ -53,6 +57,8 @@ public class Persist extends UnicastRemoteObject implements IPersist {
       Collection<HonoursEntity> entities = repository.get(studentId, courseId);
       if (entities.isEmpty())
         return;
+      LOG.info("Delete {} rows from the database", entities.size());
+      entities.forEach(e -> LOG.debug(e.toString()));
       repository.delete(entities);
     } catch (Exception e) {
       LOG.error("Exception", e);

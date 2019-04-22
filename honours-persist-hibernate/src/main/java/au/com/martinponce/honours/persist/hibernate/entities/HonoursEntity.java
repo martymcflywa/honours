@@ -40,12 +40,16 @@ public class HonoursEntity {
   }
 
   @Override
+  public String toString() {
+    return String.format("%s %d", id.toString(), mark);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof HonoursEntity)) return false;
     HonoursEntity that = (HonoursEntity) o;
-    return Objects.equals(getId(), that.getId())
-        && Objects.equals(getMark(), that.getMark());
+    return Objects.equals(toString(), that.toString());
   }
 
   @Override

@@ -33,8 +33,8 @@ class CommandlineInterface {
 
   void run() {
     try {
-      LOG.info("Welcome to the honours assessment, follow the instructions to " +
-          "determine your eligibility for honours study");
+      LOG.info("Welcome to the honours assessment");
+      LOG.info("Follow the instructions to determine honours eligibility");
       String input;
       do {
         if (!isAuthenticated)
@@ -49,7 +49,7 @@ class CommandlineInterface {
 
         String response = sendRequest(studentId, course);
         LOG.info("[OUTPUT] {}", response);
-        LOG.info("[INPUT] Press enter to try again, or q to quit");
+        LOG.info("[INPUT ] Press enter to try again, or q to quit");
         input = INPUT.read();
         onQuitControl(input);
       } while (input.isEmpty());
@@ -83,7 +83,7 @@ class CommandlineInterface {
       ICourse course = new Course(courseId);
       request.course().unitMarks().values()
           .forEach(i -> {
-            LOG.info("[OUTPUT] Unit: {}, Mark: {}", i.id(), i.mark());
+            LOG.info("[OUTPUT] {} {}", i.id(), i.mark());
             course.add(i.id(), i.mark());
           });
       return deleteCourse(studentId, courseId) ? null : course;
@@ -94,7 +94,7 @@ class CommandlineInterface {
   }
 
   ICourse setCourse(String studentId, String courseId) throws QuitInterrupt {
-    LOG.info("Enter your unit id and its mark, for a minimum of {} units, " +
+    LOG.info("Enter unitId and mark, for a minimum of {} units, " +
         "and a maximum of {} units, or e to end input, q to quit",
         Rules.MIN_MARK_COUNT,
         Rules.MAX_MARK_COUNT);
@@ -102,7 +102,7 @@ class CommandlineInterface {
     int tally = 0;
     do {
       try {
-        String unitId = setProperty("unit id " + (tally + 1), true);
+        String unitId = setProperty("unitId " + (tally + 1), true);
         onEndControl(unitId, tally);
         String mark = setProperty("mark " + (tally + 1), true);
         onEndControl(mark, tally);
@@ -126,7 +126,7 @@ class CommandlineInterface {
       String input;
       do {
         LOG.info(
-            "[INPUT] s to save course details, or c to cancel, or q to quit");
+            "[INPUT ] s to save course details, or c to continue, or q to quit");
         input = INPUT.read();
         onCancelControl(input, "c");
         onQuitControl(input);
@@ -147,7 +147,7 @@ class CommandlineInterface {
       boolean output;
       do {
         LOG.info(
-            "[INPUT] k to keep, or d to delete, or q to quit");
+            "[INPUT ] k to keep, or d to delete, or q to quit");
         input = INPUT.read();
         onCancelControl(input, "k");
         onQuitControl(input);
@@ -178,7 +178,7 @@ class CommandlineInterface {
     String input;
     String endMessage = canEndInput ? ", or e to end input" : "";
     do {
-      LOG.info("[INPUT] Enter your {}{}, or q to quit",
+      LOG.info("[INPUT ] Enter {}{}, or q to quit",
           property,
           endMessage);
       input = INPUT.read();

@@ -38,13 +38,16 @@ public class HonoursEntityId implements Serializable {
   }
 
   @Override
+  public String toString() {
+    return String.format("%s %s %s", studentId, courseId, unitId);
+  }
+
+  @Override
   public boolean equals(Object o) {
     if (this == o) return true;
     if (!(o instanceof HonoursEntityId)) return false;
     HonoursEntityId that = (HonoursEntityId) o;
-    return Objects.equals(studentId, that.studentId)
-        && Objects.equals(courseId, that.courseId)
-        && Objects.equals(unitId, that.unitId);
+    return Objects.equals(toString(), that.toString());
   }
 
   @Override

@@ -58,6 +58,10 @@ public class HonoursEngine extends UnicastRemoteObject implements IAssess {
   @Override
   public void save(IRequest request) throws RemoteException {
     try {
+      LOG.info(
+          "Save {} {} to database",
+          request.studentId(),
+          request.course().id());
       persist.put(request);
     } catch (Exception e) {
       LOG.error("An unexpected error occurred", e);
@@ -68,6 +72,7 @@ public class HonoursEngine extends UnicastRemoteObject implements IAssess {
   @Override
   public IRequest load(String studentId, String courseId) throws RemoteException {
     try {
+      LOG.info("Load {} {} from database", studentId, courseId);
       return persist.get(studentId, courseId);
     } catch (Exception e) {
       LOG.error("An unexpected error occurred", e);
@@ -78,6 +83,7 @@ public class HonoursEngine extends UnicastRemoteObject implements IAssess {
   @Override
   public void delete(String studentId, String courseId) throws RemoteException {
     try {
+      LOG.info("Delete {} {} from database", studentId, courseId);
       persist.delete(studentId, courseId);
     } catch (Exception e) {
       LOG.error("An unexpected error occurred", e);

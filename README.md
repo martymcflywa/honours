@@ -17,6 +17,9 @@ Monday 20th May 2019
     - [Bash script](#bash-script)
     - [Manual invocation](#manual-invocation)
   - [Operation examples](#operation-examples)
+    - [New student and course](#new-student-and-course)
+    - [Existing student and course](#existing-student-and-course)
+    - [Input validation examples](#input-validation-examples)
   - [Conclusion](#conclusion)
   - [References](#references)
 
@@ -104,6 +107,24 @@ If the client is shutdown gracefully, the script will also shut down persistence
   - `java -jar -Djava.security.policy=security.policy ./honours-client/target/honours-client-2.0.0-SNAPSHOT-jar-with-dependencies.jar`
 
 ## Operation examples
+
+Click the images linking to console recordings.
+
+### New student and course
+
+New student and course details persisted and assessed.
+
+[![asciicast](https://asciinema.org/a/242354.svg)](https://asciinema.org/a/242354)
+
+### Existing student and course
+
+Existing student and course loaded and assessed, then deleted.
+
+[![asciicast](https://asciinema.org/a/242357.svg)](https://asciinema.org/a/242357)
+
+### Input validation examples
+
+[![asciicast](https://asciinema.org/a/242358.svg)](https://asciinema.org/a/242358)
 
 ## Conclusion
 

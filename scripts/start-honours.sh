@@ -2,20 +2,12 @@
 set -e
 
 # @author Martin Ponce 10371381
+# This script conveniently wraps the building of the project, and execution of
+# distributed services into a single command. The script assumes you have
+# invoked it from the root folder of this repository, ie:
+# ./scripts/start-honours.ps1
 #
-# This script conveniently wraps the execution of the server and client into
-# a single command. It's a bash script, so it only supports linux/macOS, but it
-# might work if you're running Bash for Win 10?  ¯\_(ツ)_/¯
-#
-# The script assumes you have called it from the root folder of this repository.
-# ie. ./scripts/start-honours.sh
-#
-# If you're on an unsupported OS, just follow the steps below manually in your
-# console of choice.
-#
-# 1) mvn clean verify; # to build the project
-# 1) java -jar -Djava.security.policy=security.policy ./honours-server/target/honours-server-1.0.0-SNAPSHOT-jar-with-dependencies.jar &; # as background process
-# 2) java -jar -Djava.security.policy=security.policy ./honours-client/target/honours-client-1.0.0-SNAPSHOT-jar-with-dependencies.jar
+# This script assumes that java and maven executables exist in your path.
 
 validatePath() {
   if [ ! -f "$1" ]; then
@@ -32,7 +24,7 @@ clientAssembly="./honours-client/target/honours-client-$semver-SNAPSHOT-jar-with
 securityParam="-Djava.security.policy=security.policy";
 hostnameParam="-Djava.rmi.server.hostname=localhost";
 
-wait=20;
+wait=30;
 
 echo "Check java exists";
 java -version;
@@ -54,7 +46,7 @@ export CLASSPATH=$interfaces;
 printenv | grep CLASSPATH;
 
 echo "Start rmiregistry as background process";
-rmiregistry -J-Djava.rmi.server.logCalls=true &
+rmiregistry &
 echo "Wait $wait seconds for rmiregistry to begin";
 sleep $wait;
 

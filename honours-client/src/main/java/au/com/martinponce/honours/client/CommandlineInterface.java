@@ -99,15 +99,14 @@ class CommandlineInterface {
         Rules.MIN_MARK_COUNT,
         Rules.MAX_MARK_COUNT);
     ICourse course = new Course(courseId);
-    int tally = 0;
     do {
       try {
+        int tally = course.markTally();
         String unitId = setProperty("unitId " + (tally + 1), true);
         onEndControl(unitId, tally);
         String mark = setProperty("mark " + (tally + 1), true);
         onEndControl(mark, tally);
         course.add(unitId, Integer.parseInt(mark));
-        tally = course.markTally();
       } catch (EndInputInterrupt e) {
         break;
       } catch (NumberFormatException e) {
@@ -217,7 +216,7 @@ class CommandlineInterface {
       return;
 
     if (tally < Rules.MIN_MARK_COUNT) {
-      LOG.error("Still need to enter another {} unitMarks",
+      LOG.error("Still need to input {} more unit marks",
           Rules.MIN_MARK_COUNT - tally);
       return;
     }

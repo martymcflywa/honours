@@ -62,7 +62,9 @@ Communication between each tier is handled via RMI.
 
 - JDK 1.8+
   - Developed and tested with [OpenJDK 12](https://jdk.java.net/12/)
-- [Maven 3.6.0](https://archive.apache.org/dist/maven/maven-3/3.6.0/binaries/apache-maven-3.6.0-bin.zip)
+- [Maven 3.6+](https://archive.apache.org/dist/maven/maven-3/3.6.1/binaries/apache-maven-3.6.1-bin.zip)
+  - Repository includes [maven-wrapper](https://github.com/takari/maven-wrapper) binaries
+  - See `mvnw` and `mvnw.cmd`
 
 # DevOps
 

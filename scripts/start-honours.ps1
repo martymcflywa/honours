@@ -35,9 +35,9 @@ $Wait = 30
 Write-Output "Check java exists"
 java -version
 Write-Output "Check maven exists"
-mvn -version
+./mvnw.cmd -version
 Write-Output "Building"
-mvn clean package "-Dmaven.test.skip=true"
+./mvnw.cmd clean package "-Dmaven.test.skip=true"
 Write-Output "Check remote interfaces exists $Interfaces"
 Assert-PathExists $Interfaces
 Write-Output "Check persist executable exists $PersistAssembly"

@@ -10,6 +10,7 @@ import java.rmi.server.UnicastRemoteObject;
 
 public class Auth extends UnicastRemoteObject implements IAuth {
 
+  private static final long serialVersionUID = 1L;
   private static final Logger LOG = LoggerFactory.getLogger(Auth.class);
 
   Auth() throws RemoteException {

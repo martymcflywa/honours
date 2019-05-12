@@ -16,7 +16,7 @@ validatePath() {
   fi
 }
 
-semver=2.0.0;
+semver=2.1.0;
 interfaces="./honours-interfaces/target/honours-interfaces-$semver-SNAPSHOT.jar";
 persistAssembly="./honours-persist/target/honours-persist-$semver-SNAPSHOT-jar-with-dependencies.jar";
 serverAssembly="./honours-server/target/honours-server-$semver-SNAPSHOT-jar-with-dependencies.jar";

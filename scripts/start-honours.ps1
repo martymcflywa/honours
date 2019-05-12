@@ -22,7 +22,7 @@ function Assert-PathExists()
   }
 }
 
-$Semver = "2.0.0"
+$Semver = "2.1.0"
 $Interfaces = "./honours-interfaces/target/honours-interfaces-$Semver-SNAPSHOT.jar"
 $PersistAssembly = "./honours-persist/target/honours-persist-$Semver-SNAPSHOT-jar-with-dependencies.jar"
 $ServerAssembly = "./honours-server/target/honours-server-$Semver-SNAPSHOT-jar-with-dependencies.jar"

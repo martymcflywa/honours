@@ -36,9 +36,8 @@ public class Unit implements IUnit {
         Rules.MIN_MARK,
         Rules.MAX_MARK,
         mark,
-        "Mark must be between {} and {}",
-        Rules.MIN_MARK,
-        Rules.MAX_MARK);
+        String.format(
+            "Mark must be between %d and %d", Rules.MIN_MARK, Rules.MAX_MARK));
     return mark;
   }
 

@@ -49,11 +49,13 @@ Monday 20th May 2019
 
 ## How to RMI in Java
 
+- Oracle's [documentation](https://docs.oracle.com/javase/8/docs/technotes/guides/rmi/hello/hello-world.html) has instructions on how to implement RMI in Java (Oracle, 2019a)
+
 ---
 
 ### Remote interfaces
 
-- Must extend `Remote`
+- Must extend `Remote` (Oracle, 2019a)
 - Functions must throw `RemoteException`
 
 ---
@@ -61,10 +63,11 @@ Monday 20th May 2019
 ### Remote objects
 
 - Implement the remote interface
-- Also extend `UnicastRemoteObject`
+- Also extend `UnicastRemoteObject` (Oracle, 2019c)
   - Exports remote object
   - Obtains stub to communicate with remote object
 - No longer required to generate static stubs with `rmic`
+  - Deprecated since [Java 1.8](https://docs.oracle.com/javase/8/docs/api/java/rmi/server/UnicastRemoteObject.html)
 - Stubs are generated dynamically by extending `UnicastRemoteObject`
 
 ---
@@ -72,7 +75,7 @@ Monday 20th May 2019
 ### RMIRegistry
 
 - Bundled with JDK
-  - Can be executed as separate service
+  - Can be executed as separate service (Oracle, 2019a)
 - Servers register remote objects to `rmiregistry`
 - Clients look up remote object from `rmiregistry`
 
@@ -80,7 +83,7 @@ Monday 20th May 2019
 
 ### Naming
 
-- Servers use `Naming` to register remote objects to `rmiregistry`
+- Servers use `Naming` to register remote objects to `rmiregistry` (Oracle, 2019b)
 - Clients use `Naming` to look up references to remote objects from `rmiregistry`
 - Format: `//host:port/name`
 
@@ -250,7 +253,7 @@ Monday 20th May 2019
   - Forced to use Java for both server and client
 - I wanted to create webapp frontend
   - Need Java applet
-  - No longer supported by modern browsers
+  - No longer supported by modern browsers (Schuh, 2014)
 - Could have used REST API instead
 
 ---
@@ -261,8 +264,9 @@ Monday 20th May 2019
 
 - Coulouris, G., Dollimore, J., Kindberg, T., & Blair, G. (2014). Distributed systems: Concepts and design (5th ed.). Pearson Education.
 - Oracle. (2017). An Overview of RMI Applications. Retrieved May 5, 2019, from https://docs.oracle.com/javase/tutorial/rmi/overview.html
-- Oracle. (2019). Naming (Java Platform SE 8). Retrieved May 15, 2019, from https://docs.oracle.com/javase/8/docs/api/java/rmi/Naming.html
-- Oracle. (2019). UnicastRemoteObject (Java Platform SE 8 ). Retrieved May 5, 2019, from https://docs.oracle.com/javase/8/docs/api/java/rmi/server/UnicastRemoteObject.html
+- Oracle. (2019a). Getting Started Using Java RMI. Retrieved May 5, 2019, from https://docs.oracle.com/javase/8/docs/technotes/guides/rmi/hello/hello-world.html#create
+- Oracle. (2019b). Naming (Java Platform SE 8). Retrieved May 15, 2019, from https://docs.oracle.com/javase/8/docs/api/java/rmi/Naming.html
+- Oracle. (2019c). UnicastRemoteObject (Java Platform SE 8 ). Retrieved May 5, 2019, from https://docs.oracle.com/javase/8/docs/api/java/rmi/server/UnicastRemoteObject.html
 - Schuh, J. (2014). Chromium Blog: The Final Countdown for NPAPI. Retrieved May 12, 2019, from https://blog.chromium.org/2014/11/the-final-countdown-for-npapi.html
 - Tanenbaum, A. S., & Steen, M. Van. (2018). Distributed Systems (3rd ed.). https://doi.org/10.1145/4547.4552
 

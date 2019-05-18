@@ -3,6 +3,7 @@ package au.com.martinponce.honours.client;
 import au.com.martinponce.honours.core.Course;
 import au.com.martinponce.honours.core.Request;
 import au.com.martinponce.honours.core.Rules;
+import au.com.martinponce.honours.core.Unit;
 import au.com.martinponce.honours.interfaces.IAssess;
 import au.com.martinponce.honours.interfaces.IAuth;
 import au.com.martinponce.honours.interfaces.ICourse;
@@ -81,7 +82,8 @@ class CommandlineInterface {
       }
       LOG.info("[OUTPUT] Existing course found {} {}", studentId, courseId);
       ICourse course = new Course(courseId);
-      request.course().unitMarks().values()
+      request.course().unitMarks().values().stream()
+          .sorted(new Unit.OrderByIdAscend())
           .forEach(i -> {
             LOG.info("[OUTPUT] {} {}", i.id(), i.mark());
             course.add(i.id(), i.mark());

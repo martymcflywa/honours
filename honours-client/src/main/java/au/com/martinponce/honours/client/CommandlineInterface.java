@@ -55,7 +55,7 @@ class CommandlineInterface {
         onQuitControl(input);
       } while (input.isEmpty());
     } catch (RemoteException e) {
-      LOG.error("Remote exception", e);
+      LOG.error(e.getMessage());
       LOG.info("Try again");
       run();
     } catch (QuitInterrupt e) {
@@ -90,7 +90,7 @@ class CommandlineInterface {
           });
       return deleteCourse(studentId, courseId) ? null : course;
     } catch (RemoteException e) {
-      LOG.error("Remote exception", e);
+      LOG.error(e.getMessage());
       throw new RemoteException(e.getMessage());
     }
   }
@@ -140,7 +140,7 @@ class CommandlineInterface {
     } catch (CancelInputInterrupt e) {
       LOG.info("Course not saved");
     } catch (RemoteException e) {
-      LOG.error("Remote exception", e);
+      LOG.error(e.getMessage());
       LOG.info("Try again");
       saveCourse(studentId, course);
     }
@@ -163,7 +163,7 @@ class CommandlineInterface {
       LOG.info("Course not deleted");
       return false;
     } catch (RemoteException e) {
-      LOG.error("Remote exception", e);
+      LOG.error(e.getMessage());
       LOG.info("Course not deleted");
       return false;
     }

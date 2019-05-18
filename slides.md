@@ -221,27 +221,33 @@ Monday 20th May 2019
 
 ---
 
-### New student and course
+## Qualified
 
-<a href="https://asciinema.org/a/242354">
-  <img src="https://asciinema.org/a/242354.svg" width="700">
-</a>
+[![asciicast](https://asciinema.org/a/247042.svg)](https://asciinema.org/a/247042)
 
 ---
 
-### Existing student and course
+## Needs further assessment
 
-<a href="https://asciinema.org/a/242357">
-  <img src="https://asciinema.org/a/242357.svg" width="700">
-</a>
+[![asciicast](https://asciinema.org/a/247044.svg)](https://asciinema.org/a/247044)
 
 ---
 
-### Input validation
+## Needs permission
 
-<a href="https://asciinema.org/a/242358">
-  <img src="https://asciinema.org/a/242358.svg" width="700">
-</a>
+[![asciicast](https://asciinema.org/a/247045.svg)](https://asciinema.org/a/247045)
+
+---
+
+## Not qualified
+
+[![asciicast](https://asciinema.org/a/247046.svg)](https://asciinema.org/a/247046)
+
+---
+
+## Disqualified
+
+[![asciicast](https://asciinema.org/a/247048.svg)](https://asciinema.org/a/247048)
 
 ---
 

@@ -26,9 +26,11 @@ https://github.com/martymcflywa/honours
   - [Script invocation](#script-invocation)
   - [Authentication](#authentication)
 - [Operation examples](#operation-examples)
-  - [New student and course](#new-student-and-course)
-  - [Existing student and course](#existing-student-and-course)
-  - [Input validation examples](#input-validation-examples)
+  - [Qualified](#qualified)
+  - [Needs further assessment](#needs-further-assessment)
+  - [Needs coordinator permission](#needs-coordinator-permission)
+  - [Not qualified](#not-qualified)
+  - [Disqualified](#disqualified)
 - [Conclusion](#conclusion)
 - [References](#references)
 
@@ -151,21 +153,25 @@ If the client is shutdown gracefully, the script will also shut down persistence
 
 Click the images linking to console recordings.
 
-## New student and course
+## Qualified
 
-New student and course details persisted and assessed.
+[![asciicast](https://asciinema.org/a/247042.svg)](https://asciinema.org/a/247042)
 
-[![asciicast](https://asciinema.org/a/242354.svg)](https://asciinema.org/a/242354)
+## Needs further assessment
 
-## Existing student and course
+[![asciicast](https://asciinema.org/a/247044.svg)](https://asciinema.org/a/247044)
 
-Existing student and course loaded and assessed, then deleted.
+## Needs coordinator permission
 
-[![asciicast](https://asciinema.org/a/242357.svg)](https://asciinema.org/a/242357)
+[![asciicast](https://asciinema.org/a/247045.svg)](https://asciinema.org/a/247045)
 
-## Input validation examples
+## Not qualified
 
-[![asciicast](https://asciinema.org/a/242358.svg)](https://asciinema.org/a/242358)
+[![asciicast](https://asciinema.org/a/247046.svg)](https://asciinema.org/a/247046)
+
+## Disqualified
+
+[![asciicast](https://asciinema.org/a/247048.svg)](https://asciinema.org/a/247048)
 
 # Conclusion
 
@@ -179,5 +185,8 @@ A more modern approach could have used REST services. Further design would have 
 
 - Coulouris, G., Dollimore, J., Kindberg, T., & Blair, G. (2014). Distributed systems: Concepts and design (5th ed.). Pearson Education.
 - Oracle. (2017). An Overview of RMI Applications. Retrieved May 5, 2019, from https://docs.oracle.com/javase/tutorial/rmi/overview.html
+- Oracle. (2019a). Getting Started Using Java RMI. Retrieved May 5, 2019, from https://docs.oracle.com/javase/8/docs/technotes/guides/rmi/hello/hello-world.html#create
+- Oracle. (2019b). Naming (Java Platform SE 8). Retrieved May 15, 2019, from https://docs.oracle.com/javase/8/docs/api/java/rmi/Naming.html
+- Oracle. (2019c). UnicastRemoteObject (Java Platform SE 8 ). Retrieved May 5, 2019, from https://docs.oracle.com/javase/8/docs/api/java/rmi/server/UnicastRemoteObject.html
 - Schuh, J. (2014). Chromium Blog: The Final Countdown for NPAPI. Retrieved May 12, 2019, from https://blog.chromium.org/2014/11/the-final-countdown-for-npapi.html
 - Tanenbaum, A. S., & Steen, M. Van. (2018). Distributed Systems (3rd ed.). https://doi.org/10.1145/4547.4552

@@ -3,6 +3,7 @@ package au.com.martinponce.honours.core;
 import au.com.martinponce.honours.interfaces.IUnit;
 import org.apache.commons.lang3.Validate;
 
+import java.util.Comparator;
 import java.util.Objects;
 
 public class Unit implements IUnit {
@@ -59,5 +60,13 @@ public class Unit implements IUnit {
   @Override
   public int hashCode() {
     return Objects.hash(ID, MARK);
+  }
+
+  public static class OrderByIdAscend implements Comparator<IUnit> {
+
+    @Override
+    public int compare(IUnit a, IUnit b) {
+      return a.id().compareTo(b.id());
+    }
   }
 }

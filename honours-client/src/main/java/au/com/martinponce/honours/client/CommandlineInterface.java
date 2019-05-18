@@ -50,10 +50,9 @@ class CommandlineInterface {
 
         String response = sendRequest(studentId, course);
         LOG.info("[OUTPUT] {}", response);
-        LOG.info("[INPUT ] Press enter to try again, or q to quit");
+        LOG.info("[INPUT ] Press any key to try again, or q to quit");
         input = INPUT.read();
-        onQuitControl(input);
-      } while (input.isEmpty());
+      } while (!onQuitControl(input));
     } catch (RemoteException e) {
       LOG.error(e.getMessage());
       LOG.info("Try again");
@@ -105,7 +104,7 @@ class CommandlineInterface {
       try {
         int tally = course.markTally();
         String input = setProperty(
-            String.format("Enter unitId,mark %02d", tally + 1), true);
+            String.format("unitId,mark %02d", tally + 1), true);
         onEndControl(input, tally);
         String[] unitMark = input.split(",");
         if (unitMark.length != 2)
@@ -229,9 +228,10 @@ class CommandlineInterface {
     throw new EndInputInterrupt();
   }
 
-  private void onQuitControl(String input) throws QuitInterrupt {
+  private boolean onQuitControl(String input) throws QuitInterrupt {
     if (input != null && input.equals("q"))
       throw new QuitInterrupt();
+    return false;
   }
 
   private void shutdown() {

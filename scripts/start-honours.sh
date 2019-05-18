@@ -31,7 +31,7 @@ java -version;
 echo "Check maven exists";
 ./mvnw -version;
 echo "Building";
-./mvnw clean package -Dmaven.test.skip=true;
+./mvnw package -Dmaven.test.skip=true;
 echo "Check remote interfaces exists $interfaces";
 validatePath $interfaces;
 echo "Check persist executable exists $persistAssembly";

@@ -231,7 +231,7 @@ class CommandlineInterfaceTest {
     @Override
     public String read() {
       i++;
-      return String.valueOf(i);
+      return String.format("unitId%02d,%d", i, i);
     }
   }
 
@@ -241,8 +241,9 @@ class CommandlineInterfaceTest {
     @Override
     public String read() {
       i++;
-      int MAX = Rules.MIN_MARK_COUNT * 2;
-      return i <= MAX ? String.valueOf(i) : "e";
+      int MAX = Rules.MIN_MARK_COUNT;
+      String input = String.format("unitId%02d,%d", i, i);
+      return i <= MAX ? input : "e";
     }
   }
 

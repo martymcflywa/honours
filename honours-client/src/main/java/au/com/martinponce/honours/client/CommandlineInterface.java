@@ -102,11 +102,15 @@ class CommandlineInterface {
     do {
       try {
         int tally = course.markTally();
-        String unitId = setProperty("unitId " + (tally + 1), true);
-        onEndControl(unitId, tally);
-        String mark = setProperty("mark " + (tally + 1), true);
-        onEndControl(mark, tally);
-        course.add(unitId, Integer.parseInt(mark));
+        String input = setProperty(
+            String.format("Enter unitId,mark %02d", tally + 1), true);
+        onEndControl(input, tally);
+        String[] unitMark = input.split(",");
+        if (unitMark.length != 2)
+          throw new IllegalArgumentException("Must be in format 'unitId,mark'");
+        String unitId = unitMark[0].trim();
+        int mark = Integer.parseInt(unitMark[1].trim());
+        course.add(unitId, mark);
       } catch (EndInputInterrupt e) {
         break;
       } catch (NumberFormatException e) {
@@ -216,7 +220,7 @@ class CommandlineInterface {
       return;
 
     if (tally < Rules.MIN_MARK_COUNT) {
-      LOG.error("Still need to input {} more unit marks",
+      LOG.error("Still need to input at least {} more unit marks",
           Rules.MIN_MARK_COUNT - tally);
       return;
     }
